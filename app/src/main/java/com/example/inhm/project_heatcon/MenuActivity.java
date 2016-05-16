@@ -49,8 +49,10 @@ public class MenuActivity extends Activity {
 //        input = serverThread.request_lecture_list();
 
 
-        input = "1,2/OS,COMP/43,15/A,B/921,921/1,2";
+        input = "1,2,3,4,5/OS,COMP,디마커,모바일커뮤니케이션,광고학개론/03,05,01,02,23/A,12:30,18:30,21:30,01:30/921,921,921,921,921/1,2,1,2,1";
 
+
+        // "09:00/10;15"
         Intent intent = new Intent(this, AttendanceActivity.class);
         intent.putExtra("lecture_list", student_number + " " + input);
         intent.putExtra("student_number",student_number);

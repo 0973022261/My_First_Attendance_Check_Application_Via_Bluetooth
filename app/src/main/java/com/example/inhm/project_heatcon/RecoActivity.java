@@ -42,6 +42,9 @@ import java.util.ArrayList;
 public abstract class RecoActivity extends Activity implements RECOServiceConnectListener {
     protected RECOBeaconManager mRecoManager;
     protected ArrayList<RECOBeaconRegion> mRegions;
+    public static final boolean SCAN_RECO_ONLY = true;
+
+    public static final String RECO_UUID = "24DDF411-8CF1-440C-87CD-E368DAF9C93E";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public abstract class RecoActivity extends Activity implements RECOServiceConnec
          * 주의: enableRangingTimeout을 false로 설정 시, 배터리 소모량이 증가합니다.
          */
 
-        mRecoManager = RECOBeaconManager.getInstance(getApplicationContext(), MainActivity.SCAN_RECO_ONLY);
+        mRecoManager = RECOBeaconManager.getInstance(getApplicationContext(), SCAN_RECO_ONLY);
         mRegions = this.generateBeaconRegion();
     }
 
@@ -67,7 +70,7 @@ public abstract class RecoActivity extends Activity implements RECOServiceConnec
         ArrayList<RECOBeaconRegion> regions = new ArrayList<RECOBeaconRegion>();
 
         RECOBeaconRegion recoRegion;
-        recoRegion = new RECOBeaconRegion(MainActivity.RECO_UUID, "RECO Sample Region");
+        recoRegion = new RECOBeaconRegion(RECO_UUID, "RECO Sample Region");
         regions.add(recoRegion);
 
         return regions;

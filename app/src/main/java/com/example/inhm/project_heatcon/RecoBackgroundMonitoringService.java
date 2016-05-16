@@ -101,7 +101,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
          * 		mRecoManager = RECOBeaconManager.getInstance(getApplicationContext(), true, false);
          * 주의: enableRangingTimeout을 false로 설정 시, 배터리 소모량이 증가합니다.
          */
-        mRecoManager = RECOBeaconManager.getInstance(getApplicationContext(), MainActivity.SCAN_RECO_ONLY, true);
+        mRecoManager = RECOBeaconManager.getInstance(getApplicationContext(), RecoActivity.SCAN_RECO_ONLY, true);
         this.bindRECOService();
         return START_STICKY;
     }
@@ -133,7 +133,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
 
         RECOBeaconRegion recoRegion;
 
-        recoRegion = new RECOBeaconRegion(MainActivity.RECO_UUID, OUR_BEACON_MAJOR, "교실");
+        recoRegion = new RECOBeaconRegion(RecoActivity.RECO_UUID, OUR_BEACON_MAJOR, "교실");
         recoRegion.setRegionExpirationTimeMillis(mRegionExpirationTime);   //1분 간격으로 찾음
         mRegions.add(recoRegion);
     }
