@@ -33,7 +33,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-
         <service android:name="com.perples.recosdk.RECOBeaconService" />
         <service android:name=".RecoBackgroundMonitoringService" />
 
@@ -49,7 +48,11 @@
         <activity android:name=".AttendanceActivity" />
         <activity android:name=".TimeTableActivity" />
         <activity android:name=".UseInfoActivity" />
-        <activity android:name=".CheckAttendandce"></activity>
+        <activity android:name=".CheckAttendandce" />
+        <activity android:name=".Mid" />
+        <activity android:name=".Final" />
+        <activity android:name=".Absent" />
+        <activity android:name=".Late"></activity>
     </application>
 
 </manifest>

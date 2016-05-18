@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
@@ -43,15 +44,10 @@ public class LogInActivity extends AppCompatActivity {
 
     boolean login_Check;
 
-    public static final String RECO_UUID = "24DDF411-8CF1-440C-87CD-E368DAF9C93E";      //레코비콘 UUID 변수
-    public static final int Major = 921;                                                //레코비콘 Major 변수
-    public static final boolean SCAN_RECO_ONLY = true;                                  //레코 비콘만 스캔하겠다.
-
     private static final int REQUEST_ENABLE_BT = 1;                                     //Bluetooth 연결 요청 변수
 
     private BluetoothManager mBluetoothManager;                                         //블루투스 매니저 객체 변수
     private BluetoothAdapter mBluetoothAdapter;                                         //블루투스 어댑터 객체 변수
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +61,12 @@ public class LogInActivity extends AppCompatActivity {
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
 
-        if(mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
+        if(mBluetoothAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON ||
+                mBluetoothAdapter.getState() == mBluetoothAdapter.STATE_ON){
+//            mBluetoothAdapter.disable();
+        }
+        else {
+            mBluetoothAdapter.enable();
         }
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -76,20 +75,23 @@ public class LogInActivity extends AppCompatActivity {
                 Log.i("MainActivity", "The location permission (ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION) is already granted.");
             }
         }
+
+
+        //아이디 저장된거 불러오기
+
+        SharedPreferences sharedPreferences = getSharedPreferences("student_number",0);
+        String str=sharedPreferences.getString("student_number","");
+        editText_student_number.setText(str);
+
+        Intent intent = new Intent(this,RecoBackgroundMonitoringService.class);
+        startService(intent);
+
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = mBluetoothManager.getAdapter();
-
-        if(mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
-        }
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.i("MainActivity", "The location permission (ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION) is not granted.");
@@ -99,19 +101,7 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
-            //사용자가 블루투스 요청을 허용하지 않았을 경우, 어플리케이션은 종료됩니다.
-            finish();
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     public void onButton1Clicked(View v) {
-
 
 //        ServerThread serverThread = new ServerThread(REQUEST_LOGIN_NUMBER,editText_student_number.getText().toString(),editText_student_password.getText().toString(),true);
 //        serverThread.start();
@@ -126,9 +116,13 @@ public class LogInActivity extends AppCompatActivity {
 
         login_Check = true;  ///// No server
 
-
-
         if (login_Check == true) {
+
+            SharedPreferences sharedPreferences = getSharedPreferences("student_number", 0);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("student_number",editText_student_number.getText().toString());
+            editor.commit();
+
             Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(getApplicationContext(), MenuActivity.class);

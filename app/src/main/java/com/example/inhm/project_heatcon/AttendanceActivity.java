@@ -19,7 +19,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class AttendanceActivity extends AppCompatActivity {
+public class
+        AttendanceActivity extends AppCompatActivity {
 
     private static final int REQUEST_ATTENDANCE_NUMBER = 2;
 
@@ -35,11 +36,14 @@ public class AttendanceActivity extends AppCompatActivity {
     String[] lecture_number;
     String[] lecture_major;
     String[] lecture_minor;
+    String[] lecture_start_time;
 
     String student_number;
     String attendance_number;
     String lecture_list;
 
+    String week_change_name;
+    char[] week;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +62,44 @@ public class AttendanceActivity extends AppCompatActivity {
         lecture_date = lecture_infomation[3].split(",");
         lecture_major = lecture_infomation[4].split(",");
         lecture_minor = lecture_infomation[5].split(",");
+        lecture_start_time = lecture_infomation[6].split(",");
+
+        week_change_name="";
+
         for (int i = 0; i < lecture_name.length; i++) {
-            lectureArrayList.add(new Lecture(lecture_number[i],lecture_name[i], lecture_week[i], lecture_date[i],lecture_major[i],lecture_minor[i]));
+
+            week = lecture_week[i].toString().toCharArray();
+            for(int j = 0 ; j < week.length;j++) {
+
+                if(j != week.length-1) {
+                    if (week[j] == '1') {
+                        week_change_name += "월요일, ";
+                    } else if (week[j] == '2') {
+                        week_change_name += "화요일, ";
+                    } else if (week[j] == '3') {
+                        week_change_name += "수요일, ";
+                    } else if (week[j] == '4') {
+                        week_change_name += "목요일, ";
+                    } else if (week[j] == '5') {
+                        week_change_name += "금요일, ";
+                    }
+                } else {
+                    if (week[j] == '1') {
+                        week_change_name += "월요일";
+                    } else if (week[j] == '2') {
+                        week_change_name += "화요일";
+                    } else if (week[j] == '3') {
+                        week_change_name += "수요일";
+                    } else if (week[j] == '4') {
+                        week_change_name += "목요일";
+                    } else if (week[j] == '5') {
+                        week_change_name += "금요일";
+                    }
+                }
+            }
+            lectureArrayList.add(new Lecture(lecture_number[i],lecture_name[i], week_change_name, lecture_date[i],lecture_major[i],lecture_minor[i],lecture_start_time[i]));
+//            lectureArrayList.add(new Lecture(lecture_number[i],lecture_name[i], lecture_week[i], lecture_date[i],lecture_major[i],lecture_minor[i],lecture_start_time[i]));
+            week_change_name="";
         }
 
         try {
@@ -152,6 +192,7 @@ public class AttendanceActivity extends AppCompatActivity {
                     intent.putExtra("attendance_number",attendance_number);
                     intent.putExtra("student_number",student_number);
                     intent.putExtra("lecture_number",lecture_number[position]);
+                    intent.putExtra("lecture_start_time",lecture_start_time[position]);
                     startActivity(intent);
                 }
             });

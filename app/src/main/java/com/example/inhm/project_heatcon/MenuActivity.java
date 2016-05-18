@@ -22,9 +22,8 @@ import java.util.ArrayList;
 public class MenuActivity extends Activity {
 
     String student_number;                          //학번
-    String lecture_number;
-
     String input;
+
     private static final int REQUEST_MENU_NUMBER = 5;       //서버 스레드 요청 코드
 
     @Override
@@ -34,7 +33,6 @@ public class MenuActivity extends Activity {
 
         Intent intent = getIntent();
         student_number = (String) intent.getSerializableExtra("student_number");
-
     }
 
     public void onButtonAttendClicked(View v) {
@@ -49,20 +47,30 @@ public class MenuActivity extends Activity {
 //        input = serverThread.request_lecture_list();
 
 
-        input = "1,2,3,4,5/OS,COMP,디마커,모바일커뮤니케이션,광고학개론/03,05,01,02,23/A,12:30,18:30,21:30,01:30/921,921,921,921,921/1,2,1,2,1";
+        input = "1,2,3,4,5/OS,COMP,디마커,모바일커뮤니케이션,광고학개론/12,23,24,15,34/AB,AC,FA,BD,AB/921,921,921,921,921/1,2,1,2,1/09:00-10:30,09:00-10:30,09:00-10:30,09:00-10:30,15:00-15:30";
 
-
-        // "09:00/10;15"
         Intent intent = new Intent(this, AttendanceActivity.class);
         intent.putExtra("lecture_list", student_number + " " + input);
         intent.putExtra("student_number",student_number);
-//        intent.putExtra("lecture_number",lecture_number);
         startActivity(intent);
     }
 
     public void onButtonTimeTableClicked(View v) {
+        //        ServerThread serverThread = new ServerThread(REQUEST_MENU_NUMBER,student_number);
+//        serverThread.start();
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        input = serverThread.request_lecture_list();
+
+
+        input = "1,2,3,4,5/OS,COMP,디마커,모바일커뮤니케이션,광고학개론/12,23,24,15,34/AB,AC,FA,BD,AB/921,921,921,921,921/1,2,1,2,1/09:00-10:30,09:00-10:30,09:00-10:30,09:00-10:30,15:00-15:30";
+
         Intent intent = new Intent(this, TimeTableActivity.class);
         intent.putExtra("student_number", student_number);
+        intent.putExtra("input",input);
         startActivity(intent);
     }
 

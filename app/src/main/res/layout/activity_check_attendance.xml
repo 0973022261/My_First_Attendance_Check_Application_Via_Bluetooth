@@ -89,14 +89,16 @@
                 android:id="@+id/textView9"
                 android:gravity="center" />
 
-            <TextView
+            <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="0"
                 android:id="@+id/absent_number"
                 android:gravity="center"
-                android:textSize="50dp" />
+                android:textSize="50dp"
+                android:background="#00000000"
+                android:onClick="onButtonAbsentClicked" />
 
         </LinearLayout>
 
@@ -113,14 +115,16 @@
                 android:id="@+id/textView11"
                 android:gravity="center" />
 
-            <TextView
+            <Button
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="0"
                 android:id="@+id/late_number"
                 android:gravity="center"
-                android:textSize="50dp" />
+                android:textSize="50dp"
+                android:background="#00000000"
+                android:onClick="onButtonLateClicked" />
         </LinearLayout>
     </LinearLayout>
 
@@ -150,4 +154,14 @@
         android:layout_below="@+id/button7"
         android:layout_alignParentStart="true"
         android:onClick="onButtonFinalClicked" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="새로고침"
+        android:id="@+id/button"
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/linearLayout"
+        android:onClick="onButtonTestClicked" />
 </RelativeLayout>

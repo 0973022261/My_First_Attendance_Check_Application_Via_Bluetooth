@@ -24,10 +24,22 @@
         android:layout_marginBottom="20dp"
         android:onClick="onButtonTimeTableClicked" />
 
+
     <Button
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="이용안내"
+        android:text="학생식당 메뉴"
+        android:id="@+id/button6"
+        android:layout_gravity="center_horizontal"
+        android:textSize="30dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="onButtonTimeTableClicked" />
+
+
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="환경설정"
         android:id="@+id/button8"
         android:layout_gravity="center_horizontal"
         android:textSize="30dp"

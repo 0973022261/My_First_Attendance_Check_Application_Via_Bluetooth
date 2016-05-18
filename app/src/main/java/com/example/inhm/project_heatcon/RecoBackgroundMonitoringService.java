@@ -27,6 +27,7 @@ package com.example.inhm.project_heatcon;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -54,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
+import java.util.prefs.PreferencesFactory;
 
 /**
  *
@@ -64,14 +66,12 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
     /**
      * 1초 스캔, 10초 간격으로 스캔, 60초의 region expiration time은 당사 권장사항입니다.
      */
+
     Socket socket;                              //소켓통신을 위한 소켓 객체 변수 생성
     String host = "54.199.247.89";               //소켓 통신을 위한 서버 host 주소
     int port = 8000;                            //소켓 통신을 위한 서버 port 번호
 
-
-    MyThreadEnter myThread_enter = new MyThreadEnter();
-    MyThreadExit myThread_exit = new MyThreadExit();
-
+    public boolean flag = false;
     private long mScanDuration = 1 * 1000L;
     private long mSleepDuration = 10 * 1000L;
     private long mRegionExpirationTime = 60 * 1000L;
@@ -84,7 +84,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
     //////1번째 실행////
     @Override
     public void onCreate() {
-        Log.i("BackMonitoringService", "onCreate()");
+        Log.d("LOGINING3", "onCreate()");
 
         super.onCreate();
     }
@@ -93,7 +93,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
     //////2번째 실행//////
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("BackMonitoringService", "onStartCommand()");
+        Log.d("LOGINGING3", "onStartCommand()");
         /**
          *
          * RECOBeaconManager 인스턴스틀 생성합니다. (스캔 대상 및 백그라운드 ranging timeout 설정)
@@ -102,6 +102,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
          * 주의: enableRangingTimeout을 false로 설정 시, 배터리 소모량이 증가합니다.
          */
         mRecoManager = RECOBeaconManager.getInstance(getApplicationContext(), RecoActivity.SCAN_RECO_ONLY, true);
+        Log.d("LOGINGING3", "mRecoManager = "+mRecoManager);
         this.bindRECOService();
         return START_STICKY;
     }
@@ -109,9 +110,10 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
 
     //////3번쨰 실행///////
     private void bindRECOService() {
-        Log.i("BackMonitoringService", "bindRECOService()");
+        Log.d("LOGINING3", "bindRECOService()");
 
         mRegions = new ArrayList<RECOBeaconRegion>();
+        Log.d("LOGINGING3", "mRegions = "+mRegions);
         this.generateBeaconRegion();
 
         mRecoManager.setMonitoringListener(this);
@@ -129,12 +131,13 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
      */
 
     private void generateBeaconRegion() {
-        Log.i("BackMonitoringService", "generateBeaconRegion()");
+        Log.d("LOGINING3", "generateBeaconRegion()");
 
         RECOBeaconRegion recoRegion;
 
         recoRegion = new RECOBeaconRegion(RecoActivity.RECO_UUID, OUR_BEACON_MAJOR, "교실");
         recoRegion.setRegionExpirationTimeMillis(mRegionExpirationTime);   //1분 간격으로 찾음
+        Log.d("LOGINGING3", "recoRegion="+recoRegion);
         mRegions.add(recoRegion);
     }
 
@@ -142,7 +145,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
     ////////5번째 실행///////
     @Override
     public void onServiceConnect() {
-        Log.i("BackMonitoringService", "onServiceConnect()");
+        Log.d("LOGINING3", "onServiceConnect()");
         this.startMonitoring();
         //Write the code when RECOBeaconManager is bound to RECOBeaconService
     }
@@ -151,19 +154,20 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
     //////////6번째 실행///////
     //서비스가 커넥트 될시 불리는 함수
     private void startMonitoring() {
-        Log.i("BackMonitoringService", "startMonitoring()");
+        Log.d("LOGINING3", "startMonitoring()");
 
         mRecoManager.setScanPeriod(mScanDuration);
         mRecoManager.setSleepPeriod(mSleepDuration);
-
+        Log.d("LOGINGING3", "region = ");
         for (RECOBeaconRegion region : mRegions) {
             try {
                 mRecoManager.startMonitoringForRegion(region);
+                Log.d("LOGINGING5", "mRecoManager = startMonitoringforregion");
             } catch (RemoteException e) {
-                Log.e("BackMonitoringService", "RemoteException has occured while executing RECOManager.startMonitoringForRegion()");
+                Log.e("LOGINING5", "RemoteException has occured while executing RECOManager.startMonitoringForRegion()");
                 e.printStackTrace();
             } catch (NullPointerException e) {
-                Log.e("BackMonitoringService", "NullPointerException has occured while executing RECOManager.startMonitoringForRegion()");
+                Log.e("LOGINING5", "NullPointerException has occured while executing RECOManager.startMonitoringForRegion()");
                 e.printStackTrace();
             }
         }
@@ -173,7 +177,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
     /////////7번째 실행//////////
     @Override
     public void didStartMonitoringForRegion(RECOBeaconRegion region) {
-        Log.i("BackMonitoringService", "didStartMonitoringForRegion() - " + region.getUniqueIdentifier());
+        Log.d("LOGINING3", "didStartMonitoringForRegion() - " + region.getUniqueIdentifier());
         //Write the code when starting monitoring the region is started successfully
     }
 
@@ -181,14 +185,14 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
     //////////8번째 실행/////////
     @Override
     public void didDetermineStateForRegion(RECOBeaconRegionState state, RECOBeaconRegion region) {
-        Log.i("BackMonitoringService", "didDetermineStateForRegion()");
+        Log.d("LOGINING3", "didDetermineStateForRegion()");
         //Write the code when the state of the monitored region is changed
     }
 
 
     @Override
     public void onDestroy() {
-        Log.i("BackMonitoringService", "onDestroy()");
+        Log.d("LOGINING3", "onDestroy()");
         this.tearDown();
         super.onDestroy();
     }
@@ -237,46 +241,21 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
          */
 
         //Get the region and found beacon list in the entered region
-        Log.i("BackMonitoringService", "didEnterRegion() - " + region.getUniqueIdentifier());
-        this.popupNotification("출석" + region.getUniqueIdentifier());
+        Log.d("LOGINING3", "didEnterRegion() - " + region.getUniqueIdentifier());
+        this.popupNotification("출석이 가능합니다." + region.getUniqueIdentifier());
+        flag =true;
+
+
+        Log.d("LOGINGING3", ""+flag);
+        SharedPreferences preferences = getSharedPreferences("FLAG",0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("FLAG","TRUE");
+        editor.commit();
+
         //Write the code when the device is enter the region
 
-
-        myThread_enter.start();
-
     }
 
-    class MyThreadEnter extends Thread {
-        public void run() {
-            try {
-                Looper.prepare();
-
-                Log.d("Run", "서버접속");
-                socket = new Socket(host, port);
-
-                Log.d("Run", socket.toString());
-                String output;
-                output = "출석";
-                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream());
-                outstream.writeObject(output);
-                Log.d("Run", outstream.toString());
-                outstream.flush();
-
-                ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
-                Boolean input = instream.readBoolean();
-                Log.d("Run", "서버로 부터 받은 데이터" + input.toString());
-
-
-                instream.close();
-                outstream.close();
-                socket.close();
-                Looper.loop();
-            } catch (Exception e) {
-                Log.d("Run", e.toString());
-            }
-        }
-
-    }
 
     @Override
     public void didExitRegion(RECOBeaconRegion region) {
@@ -287,40 +266,12 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
          */
 
         Log.i("BackMonitoringService", "didExitRegion() - " + region.getUniqueIdentifier());
-        this.popupNotification("퇴실" + region.getUniqueIdentifier());
-
-        myThread_exit.start();
-    }
-    class MyThreadExit extends Thread {
-        public void run() {
-            try {
-                Looper.prepare();
-
-                Log.d("Run", "서버접속");
-                socket = new Socket(host, port);
-
-                Log.d("Run", socket.toString());
-                String output;
-                output = "퇴실";
-                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream());
-                outstream.writeObject(output);
-                Log.d("Run", outstream.toString());
-                outstream.flush();
-
-                ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
-                Boolean input = instream.readBoolean();
-                Log.d("Run", "서버로 부터 받은 데이터" + input.toString());
-
-
-                instream.close();
-                outstream.close();
-                socket.close();
-                Looper.loop();
-            } catch (Exception e) {
-                Log.d("Run", e.toString());
-            }
-        }
-
+        this.popupNotification("비콘지역으로부터 멀어졌습니다." + region.getUniqueIdentifier());
+        flag = false;
+        SharedPreferences preferences = getSharedPreferences("FLAG",0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("FLAG", "FALSE");
+        editor.commit();
 
     }
 

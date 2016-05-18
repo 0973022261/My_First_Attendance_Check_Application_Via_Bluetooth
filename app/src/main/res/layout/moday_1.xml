@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1교시"
+        android:id="@+id/mon1"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2교시"
+        android:id="@+id/mon2"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="3교시"
+        android:id="@+id/mon3"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="4교시"
+        android:id="@+id/mon4"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="5교시"
+        android:id="@+id/mon5"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="6교시"
+        android:id="@+id/mon6"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="7교시"
+        android:id="@+id/mon7"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="8교시"
+        android:id="@+id/mon8"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="9교시"
+        android:id="@+id/mon9"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="10교시"
+        android:id="@+id/mon10"
+        android:layout_weight="1"
+        android:gravity="center"/>
+
+</LinearLayout>

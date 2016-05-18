@@ -59,7 +59,7 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
     private static final int REQUEST_CHECK_NUMBER = 6;
 
     private long mScanPeriod = 1*1000L;
-    private long mSleepPeriod = 1*1000L;
+    private long mSleepPeriod = 10*1000L;
 
     private boolean mInitialSetting = true;
 
