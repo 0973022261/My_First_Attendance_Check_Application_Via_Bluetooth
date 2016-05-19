@@ -12,8 +12,8 @@ public class Mid extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mid);
-        textView_name = (TextView)findViewById(R.id.textView_name);
-        textView = (TextView)findViewById(R.id.text_mid);
+        textView_name = (TextView) findViewById(R.id.textView_name);
+        textView = (TextView) findViewById(R.id.text_mid);
 
         Intent intent = getIntent();
 
@@ -21,6 +21,10 @@ public class Mid extends AppCompatActivity {
 
         String str = (String) intent.getSerializableExtra("request_mid_score");
 
-        textView.setText(""+str+"점");
+        if (str == null) {
+            textView.setText("중간고사 점수가 아직 나오지 않았습니다.");
+        } else {
+            textView.setText("" + str + "점");
+        }
     }
 }

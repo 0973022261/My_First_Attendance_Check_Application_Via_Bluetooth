@@ -38,9 +38,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
         android:id="@+id/text_absent"
+        android:layout_marginTop="41dp"
         android:layout_below="@+id/textView_date"
+        android:layout_centerHorizontal="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/absent_list"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="127dp" />
+        android:layout_below="@+id/text_absent" />
 </RelativeLayout>

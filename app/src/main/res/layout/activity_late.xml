@@ -39,9 +39,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
         android:id="@+id/text_late"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/textView_date"
+        android:layout_toEndOf="@+id/textView_date"
+        android:layout_marginTop="45dp" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/late_list"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="130dp" />
+        android:layout_below="@+id/text_late" />
 </RelativeLayout>

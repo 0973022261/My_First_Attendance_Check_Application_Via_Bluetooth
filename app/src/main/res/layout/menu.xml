@@ -7,7 +7,7 @@
     <Button
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="출결 현황 조회"
+        android:text="수강 과목 목록"
         android:id="@+id/button2"
         android:layout_gravity="center_horizontal"
         android:textSize="30dp"
@@ -33,7 +33,7 @@
         android:layout_gravity="center_horizontal"
         android:textSize="30dp"
         android:layout_marginBottom="20dp"
-        android:onClick="onButtonTimeTableClicked" />
+        android:onClick="onButtonFoodListClicked" />
 
 
     <Button

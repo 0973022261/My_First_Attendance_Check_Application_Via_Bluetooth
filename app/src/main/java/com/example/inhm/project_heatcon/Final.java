@@ -20,7 +20,10 @@ public class Final extends AppCompatActivity {
 
         String str = (String) intent.getSerializableExtra("request_final_score");
 
-        textView.setText(""+str+"점");
-
+        if(str == null) {
+            textView.setText("아직 기말고사점수가 나오지 않았습니다.");
+        }else {
+            textView.setText("" + str + "점");
+        }
     }
 }

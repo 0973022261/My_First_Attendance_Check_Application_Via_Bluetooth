@@ -164,8 +164,17 @@ public class
             final Lecture lecture = lectureArrayList.get(position);
 
             textView_lecture_name.setText(lecture.lecture_name);
-            textView_lecture_week.setText(lecture.lecture_week);
-            textView_lecture_date.setText(lecture.lecture_date);
+
+
+            String[] a = lecture.lecture_week.split(",");
+
+            char[] b = lecture.lecture_date.toString().toCharArray();
+
+                textView_lecture_week.setText(a[0]+b[0]+"교시"+" , ");
+                textView_lecture_date.setText(a[1]+b[1]+"교시");
+
+//                textView_lecture_week.setText(lecture.lecture_week);
+//                textView_lecture_date.setText(lecture.lecture_date);
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override

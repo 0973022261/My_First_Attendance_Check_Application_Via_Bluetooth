@@ -14,7 +14,7 @@ public class ServerThread extends Thread{
 
 
     Socket socket;                              //소켓통신을 위한 소켓 객체 변수 생성
-    String host = "54.238.181.141";               //소켓 통신을 위한 서버 host 주소
+    String host = "54.238.155.252";               //소켓 통신을 위한 서버 host 주소
     int port = 8000;                            //소켓 통신을 위한 서버 port 번호
 
     private int REQUEST_NUMBER;
@@ -96,6 +96,7 @@ public class ServerThread extends Thread{
     public String request_final_score() {return final_score;}
     public String request_late() { return str_late;}
     public String request_absent() { return str_absent;}
+    public String request_food_list() {return str_food;};
     public void run() {
         switch(REQUEST_NUMBER){
 

@@ -89,9 +89,21 @@ public class CheckAttendandce extends AppCompatActivity {
         intent = getIntent();
 
 
+        String[] a = intent.getStringExtra("Lecture_week").split(",");
+
+        char[] b = intent.getStringExtra("Lecture_date").toCharArray();
+
+//        textView_lecture_week.setText(a[0]+b[0]+"교시"+" , ");
+//        textView_lecture_date.setText(a[1]+b[1]+"교시");
+
+
         textView_name.setText(intent.getStringExtra("Lecture_name"));
-        textView_week.setText(intent.getStringExtra("Lecture_week"));
-        textView_date.setText(intent.getStringExtra("Lecture_date"));
+
+        textView_week.setText(a[0]+b[0]+"교시");
+        textView_date.setText(a[1]+b[1]+"교시");
+//        textView_week.setText(intent.getStringExtra("Lecture_week"));
+//        textView_date.setText(intent.getStringExtra("Lecture_date"));
+
         attendance_number = (String) intent.getSerializableExtra("attendance_number");
         student_number = (String) intent.getSerializableExtra("student_number");
         lecture_number = (String) intent.getSerializableExtra("lecture_number");
@@ -291,8 +303,8 @@ public class CheckAttendandce extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(),"출석이 정상처리되었습니다.",Toast.LENGTH_LONG).show();
                     check_check = "0";
-                    ServerThread serverThread = new ServerThread(REQUEST_ATTENDANCE_CHECK_NUMBER,student_number,lecture_number,attendance_number,check_check,today_date);
-                    serverThread.start();
+//                    ServerThread serverThread = new ServerThread(REQUEST_ATTENDANCE_CHECK_NUMBER,student_number,lecture_number,attendance_number,check_check,today_date);
+//                    serverThread.start();
                     break;
                 case 3:
                     //지각
@@ -302,8 +314,8 @@ public class CheckAttendandce extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"출석이 지각처리되었습니다.",Toast.LENGTH_LONG).show();
 
                     check_check = "2";
-                    ServerThread serverThread1 = new ServerThread(REQUEST_ATTENDANCE_CHECK_NUMBER,student_number,lecture_number,attendance_number,check_check,today_date);
-                    serverThread1.start();
+//                    ServerThread serverThread1 = new ServerThread(REQUEST_ATTENDANCE_CHECK_NUMBER,student_number,lecture_number,attendance_number,check_check,today_date);
+//                    serverThread1.start();
                     break;
                 case 4:
                     //결석
@@ -313,8 +325,8 @@ public class CheckAttendandce extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"출석이 결석처리되었습니다.",Toast.LENGTH_LONG).show();
 
                     check_check = "1";
-                    ServerThread serverThread2 = new ServerThread(REQUEST_ATTENDANCE_CHECK_NUMBER,student_number,lecture_number,attendance_number,check_check,today_date);
-                    serverThread2.start();
+//                    ServerThread serverThread2 = new ServerThread(REQUEST_ATTENDANCE_CHECK_NUMBER,student_number,lecture_number,attendance_number,check_check,today_date);
+//                    serverThread2.start();
                     break;
             }
         }
@@ -366,8 +378,14 @@ public class CheckAttendandce extends AppCompatActivity {
         //결석
 //        ServerThread serverThread = new ServerThread(REQUEST_ABSENT_NUMBER,student_number,lecture_number);
 //        serverThread.start();
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 //        String request_absent = serverThread.request_absent();
-//
+//        Log.d("LOGINING_request_late",""+request_absent);
+
         String request_absent = "20160504,20160511,20160513";
         Intent intent = new Intent(getApplicationContext(),Absent.class);
         intent.putExtra("request_absent",request_absent);
@@ -381,8 +399,14 @@ public class CheckAttendandce extends AppCompatActivity {
         //지각
 //        ServerThread serverThread = new ServerThread(REQUEST_LATE_NUMBER,student_number,lecture_number);
 //        serverThread.start();
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 //        String request_late = serverThread.request_late();
 
+//        Log.d("LOGINING_request_late",""+request_late);
         String request_late= "20160518,20160519";
         Intent intent = new Intent(getApplicationContext(),Late.class);
         intent.putExtra("request_late", request_late);
