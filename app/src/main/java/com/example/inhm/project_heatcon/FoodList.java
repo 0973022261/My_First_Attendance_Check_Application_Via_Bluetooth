@@ -21,46 +21,69 @@ public class FoodList extends AppCompatActivity {
     String str;
     TextView textView_food_name;
     TextView textView_food_price;
-    String str_str;
+    String[] food_list_split_by_slash;
     String[] name;
-    String[] a;
     String[] price;
+    Intent intent_get;
+    MyAdapterFoodList adapter;
+    ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
 
+        /**
+         * 메모리에 올린 텍스트뷰를 변수에 저장합니다.
+         */
         textView_food_name = (TextView) findViewById(R.id.food_name);
         textView_food_price = (TextView) findViewById(R.id.food_price);
 
-        Intent intent = getIntent();
-        str = (String) intent.getSerializableExtra("food_list");
+        /**
+         * 인텐트를 받아옵니다.
+         */
+        intent_get = getIntent();
 
-        Log.d("음식1",""+str);
+        /**
+         * 받아온 인텐트를 변수에 저장합니다.
+         */
+        str = (String) intent_get.getSerializableExtra("food_list");
+
+
+        /**
+         * 음식에대한 리스트 데이터를 token(" / "," , ")로 분류합니다.
+         * 분류는 음식 이름, 음식 가격 으로 나누게 됩니다.
+         */
+        food_list_split_by_slash = str.split("/");
+        name = food_list_split_by_slash[0].split(",");
+        price = food_list_split_by_slash[1].split(",");
+
+        /**
+         * 음식을 담고있는 ArrayList를 가져옵니다.
+         */
         arrayList =  new ArrayList<Food>();
 
-        a = str.split("/");
-        name = a[0].split(",");
-        price = a[1].split(",");
-
         if(str == null) {
-//            textView.setText("학식정보를 가져오지 못했습니다.");
         }else {
+            /**
+             * 음식 에대한 정보를 arrayList에 각각 저장합니다.
+             */
             for(int i = 0 ; i <name.length;i++ ){
                 arrayList.add(new Food(name[i],price[i]));
-//                str_str = str_str + "["+name[i] +"]"+ "-"+price[i]+"원"+"\n";
             }
-//            textView.setText(str_str);
         }
-        MyAdapterFoodList adapter = new MyAdapterFoodList(getApplicationContext(), R.layout.item_list_food);
-        ListView listView = (ListView) findViewById(R.id.list_food);
+
+        /**
+         * 설정한 어댑터에 음식정보를 붙여 띄어줍니다.
+         */
+        adapter = new MyAdapterFoodList(getApplicationContext(), R.layout.item_list_food);
+        listView = (ListView) findViewById(R.id.list_food);
         listView.setAdapter(adapter);
     }
     class MyAdapterFoodList extends BaseAdapter {
         Context context;
         int layout;
         LayoutInflater inflater;
-        String[] absent_date;
         Food food;
 
         public MyAdapterFoodList(Context context, int layout) {

@@ -14,11 +14,21 @@ public class ServerThread extends Thread{
 
 
     Socket socket;                              //소켓통신을 위한 소켓 객체 변수 생성
-    String host = "54.238.155.252";               //소켓 통신을 위한 서버 host 주소
+    String host = "54.199.246.45";               //소켓 통신을 위한 서버 host 주소
     int port = 8000;                            //소켓 통신을 위한 서버 port 번호
 
     private int REQUEST_NUMBER;
-    private static final int REQUEST_MENU_NUMBER = 5;       //서버 스레드 요청 코드
+
+    private static final int REQUEST_LOGIN_NUMBER = 1;
+    private static final int REQUEST_ATTENDANCE_NUMBER = 2;
+    private static final int REQUEST_MID_NUMBER = 3;
+    private static final int REQUEST_FINAL_NUMBER = 4;
+    private static final int REQUEST_MENU_NUMBER = 5;
+    private static final int REQUEST_ATTENDANCE_CHECK_NUMBER = 6;
+    private static final int REQUEST_LATE_NUMBER = 7;
+    private static final int REQUEST_ABSENT_NUMBER = 8;
+    private static final int REQUEST_FOOD_NUMBER = 9;
+
 
     String student_name;
     String student_number;
@@ -44,6 +54,7 @@ public class ServerThread extends Thread{
     String request_absent;
 
     boolean server_request_login = false;
+
 
     ServerThread(){};
     ServerThread(int number){
@@ -78,6 +89,18 @@ public class ServerThread extends Thread{
         this.today_date = today_date;
         this.check_check = check_check;
     };
+
+    public int REQUEST_LOGIN_NUMBER(){return REQUEST_LOGIN_NUMBER;}
+    public int REQUEST_ATTENDANCE_NUMBER(){return REQUEST_ATTENDANCE_NUMBER;}
+    public int REQUEST_MID_NUMBER(){return REQUEST_MID_NUMBER;}
+    public int REQUEST_FINAL_NUMBER(){return REQUEST_FINAL_NUMBER;}
+    public int REQUEST_MENU_NUMBER(){return REQUEST_MENU_NUMBER;}
+    public int REQUEST_ATTENDANCE_CHECK_NUMBER(){return REQUEST_ATTENDANCE_CHECK_NUMBER;}
+    public int REQUEST_LATE_NUMBER(){return REQUEST_LATE_NUMBER;}
+    public int REQUEST_ABSENT_NUMBER(){return REQUEST_ABSENT_NUMBER;}
+    public int REQUEST_FOOD_NUMBER(){return REQUEST_FOOD_NUMBER;}
+
+
     public Boolean request_attendance(){
         return server_request_login;
     }

@@ -72,7 +72,7 @@ public abstract class RecoActivity extends Activity implements RECOServiceConnec
         ArrayList<RECOBeaconRegion> regions = new ArrayList<RECOBeaconRegion>();
 
         RECOBeaconRegion recoRegion;
-        recoRegion = new RECOBeaconRegion(RECO_UUID, "RECO Sample Region");
+        recoRegion = new RECOBeaconRegion(RECO_UUID, "Attendance Region");
         regions.add(recoRegion);
 
         return regions;

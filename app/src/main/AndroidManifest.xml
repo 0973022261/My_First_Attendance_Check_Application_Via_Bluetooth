@@ -48,7 +48,7 @@
         <activity android:name=".AttendanceActivity" />
         <activity android:name=".TimeTableActivity" />
         <activity android:name=".UseInfoActivity" />
-        <activity android:name=".CheckAttendandce" />
+        <activity android:name=".CheckAttendance" />
         <activity android:name=".Mid" />
         <activity android:name=".Final" />
         <activity android:name=".Absent" />

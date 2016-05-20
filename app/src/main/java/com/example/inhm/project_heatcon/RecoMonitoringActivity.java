@@ -47,8 +47,6 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * RECOMonitoringActivity class is to monitor regions in the foreground.
- *
  * RECOMonitoringActivity 클래스는 foreground 상태에서 monitoring을 수행합니다.
  */
 public class RecoMonitoringActivity extends RecoActivity implements RECOMonitoringListener {
@@ -56,7 +54,6 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
     /**
      * 1초 스캔, 10초 간격으로 스캔, 60초의 region expiration time은 당사 권장사항입니다.
      **/
-    private static final int REQUEST_CHECK_NUMBER = 6;
 
     private long mScanPeriod = 1*1000L;
     private long mSleepPeriod = 10*1000L;
@@ -66,6 +63,7 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
     private static final String TAG = "ATE";
 
     boolean check =false;
+
     String lecture_check;
     String student_number;
     String lecture_number;
@@ -75,10 +73,6 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
         super.onCreate(savedInstanceState);
         setContentView(R.layout.checking);
 
-
-        Intent intent = getIntent();
-        student_number = (String) intent.getSerializableExtra("student_number");
-        lecture_number = (String) intent.getSerializableExtra("lecture_number");
         //mRecoManager will be created here. (Refer to the RECOActivity.onCreate())
         //mRecoManager 인스턴스는 여기서 생성됩니다. RECOActivity.onCreate() 메소들르 참고하세요.
 
@@ -102,11 +96,6 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
     @Override
     protected void onResume() {
         super.onResume();
-        if(check == true) {
-            onServiceConnect();
-            check = !check;
-        }
-
     }
 
 
@@ -119,20 +108,12 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
 
     @Override
     public void onServiceConnect() {
- //       Toast.makeText(getApplicationContext(),"onServiceConnect() 함수 호출됨",Toast.LENGTH_LONG).show();
-        Log.i("RecoMonitoringActivity", "onServiceConnect");
         this.start(mRegions);
-        //Write the code when RECOBeaconManager is bound to RECOBeaconService
     }
 
     @Override
     public void didDetermineStateForRegion(RECOBeaconRegionState recoRegionState, RECOBeaconRegion recoRegion) {
-        Log.i("RecoMonitoringActivity", "didDetermineStateForRegion()");
-        Log.i("RecoMonitoringActivity", "region: " + recoRegion.getUniqueIdentifier() + ", state: " + recoRegionState.toString());
-        Toast.makeText(getApplicationContext(),"didDetermineStateForRegion() 함수 호출됨",Toast.LENGTH_LONG).show();
-
         mInitialSetting = false;
-        //Write the code when the state of the monitored region is changed
     }
 
     @Override
@@ -141,23 +122,6 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
          * 최초 실행시, 이 콜백 메소드는 호출되지 않습니다.
          * didDetermineStateForRegion() 콜백 메소드를 통해 region 상태를 확인할 수 있습니다.
          */
-
-        //Get the region and found beacon list in the entered region
-        Log.i("RecoMonitoringActivity", "didEnterRegion() region:" + recoRegion.getUniqueIdentifier());
-        Toast.makeText(getApplicationContext(), "didEnterRegion() 함수 호출됨", Toast.LENGTH_LONG).show();
-        Log.d(TAG, "출석되었습니다.");
-
-        lecture_check = "0";
-
-//        ServerThread serverThread = new ServerThread(REQUEST_CHECK_NUMBER,student_number,lecture_number,lecture_check);
-//        serverThread.start();
-//
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        finish();
     }
 
 
@@ -168,40 +132,21 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
          * 최초 실행시, 이 콜백 메소드는 호출되지 않습니다.
          * didDetermineStateForRegion() 콜백 메소드를 통해 region 상태를 확인할 수 있습니다.
          */
-        Toast.makeText(getApplicationContext(),"didExitRegion() 함수 호출됨",Toast.LENGTH_LONG).show();
-        Log.i("RecoMonitoringActivity", "didExitRegion() region:" + recoRegion.getUniqueIdentifier());
-
-        Log.d(TAG, "퇴실되었습니다.");
-        Log.d(TAG,"퇴실되었습니다.");
-        Log.d(TAG,"퇴실되었습니다.");
-        Log.d(TAG,"퇴실되었습니다.");
-        Log.d(TAG,"퇴실되었습니다.");
-        Log.d(TAG,"퇴실되었습니다.");
-        Log.d(TAG, "퇴실되었습니다.");
-        Log.d(TAG, "퇴실되었습니다.");
-        Log.d(TAG, "퇴실되었습니다.");
-        //Write the code when the device is exit the region
     }
 
     @Override
     public void didStartMonitoringForRegion(RECOBeaconRegion recoRegion) {
-        Toast.makeText(getApplicationContext(),"didStartMonitoringForRegion() 함수 호출됨",Toast.LENGTH_LONG).show();
-        Log.i("RecoMonitoringActivity", "didStartMonitoringForRegion: " + recoRegion.getUniqueIdentifier());
-        //Write the code when starting monitoring the region is started successfully
     }
 
     @Override
     protected void start(ArrayList<RECOBeaconRegion> regions) {
-        Log.i("RecoMonitoringActivity", "start");
         for(RECOBeaconRegion region : regions) {
             try {
                 region.setRegionExpirationTimeMillis(60*1000L);
                 mRecoManager.startMonitoringForRegion(region);
             } catch (RemoteException e) {
-                Log.i("RECOMonitoringActivity", "Remote Exception");
                 e.printStackTrace();
             } catch (NullPointerException e) {
-                Log.i("RecoMonitoringActivity", "Null Pointer Exception");
                 e.printStackTrace();
             }
         }
@@ -209,15 +154,12 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
 
     @Override
     protected void stop(ArrayList<RECOBeaconRegion> regions) {
-        Toast.makeText(getApplicationContext(),"stop() 함수 호출됨",Toast.LENGTH_LONG).show();
         for(RECOBeaconRegion region : regions) {
             try {
                 mRecoManager.stopMonitoringForRegion(region);
             } catch (RemoteException e) {
-                Log.i("RecoMonitoringActivity", "Remote Exception");
                 e.printStackTrace();
             } catch (NullPointerException e) {
-                Log.i("RecoMonitoringActivity", "Null Pointer Exception");
                 e.printStackTrace();
             }
         }
@@ -227,7 +169,6 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
         try {
             mRecoManager.unbind();
         } catch (RemoteException e) {
-            Log.i("RecoMonitoringActivity", "Remote Exception");
             e.printStackTrace();
         }
     }
@@ -245,14 +186,4 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
         //See the RECOErrorCode in the documents.
         return;
     }
-    public void onButton1Clicked(View v) {
-//        Intent intent = new Intent(this,RecoMonitoringActivity.class);
-//        startActivity(intent);
-//        finish();
-
-        check =true;
-        onResume();
-
-    }
-
 }

@@ -15,27 +15,42 @@ public class Late extends AppCompatActivity {
     TextView textView_name;
     TextView textView;
     String[] strr;
+    Intent intent_get;
+    String st;
+    String str_absent;
+    MyAdapterLate adapter;
+    ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_late);
+
+        /**
+         * 메모리에 올려진 텍스트를 변수에 저장합니다.
+         */
         textView = (TextView)findViewById(R.id.text_late);
         textView_name = (TextView)findViewById(R.id.textView_name);
 
-        Intent intent = getIntent();
+        /**
+         * 인텐트를 받아옵니다.
+         */
+        intent_get = getIntent();
 
-
-        textView_name.setText(intent.getStringExtra("Lecture_name"));
-        String str = (String) intent.getSerializableExtra("request_late");
+        /**
+         * 받아온 인텐트를 텍스트뷰의 텍스트로 설정합니다.
+         */
+        textView_name.setText(intent_get.getStringExtra("Lecture_name"));
+        String str = (String) intent_get.getSerializableExtra("request_late");
 
         if(str == null){
             textView.setText("지각한 적이 없습니다.");
         }else {
-        String st = "";
-        strr = str.split(",");
-        MyAdapterLate adapter = new MyAdapterLate(getApplicationContext(), R.layout.item_list_absent, strr);
-        ListView listView = (ListView) findViewById(R.id.late_list);
-        listView.setAdapter(adapter);
+            st = "";
+            strr = str.split(",");
+            adapter = new MyAdapterLate(getApplicationContext(), R.layout.item_list_absent, strr);
+            listView = (ListView) findViewById(R.id.late_list);
+            listView.setAdapter(adapter);
         }
     }
 
@@ -75,11 +90,8 @@ public class Late extends AppCompatActivity {
                 convertView = inflater.inflate(layout, null);
 
             textView_date = (TextView) convertView.findViewById(R.id.absent_date);
-
-            String str_absent = strr[position];
-
+            str_absent = strr[position];
             textView_date.setText(str_absent);
-
             return convertView;
         }
     }

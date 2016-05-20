@@ -37,98 +37,118 @@ import java.net.Socket;
 public class LogInActivity extends AppCompatActivity {
 
 
+    ///////////////EditText///////////////////////////
     EditText editText_student_number;                           //학번
     EditText editText_student_password;                         //비밀번호
 
+    ///////////////ServerThread_Request_number////////
     private static final int REQUEST_LOGIN_NUMBER = 1;          //서버 로그인 요청 코드
+    ServerThread serverThread;
 
-    boolean login_Check;
-
-    private static final int REQUEST_ENABLE_BT = 1;                                     //Bluetooth 연결 요청 변수
-
+    ///////////////BluetoothManager///////////////////
     private BluetoothManager mBluetoothManager;                                         //블루투스 매니저 객체 변수
     private BluetoothAdapter mBluetoothAdapter;                                         //블루투스 어댑터 객체 변수
+
+    ///////////////SharedPreferences//////////////////
+    SharedPreferences sharedPreferences_student_number;
+    SharedPreferences.Editor editor;
+
+    ///////////////String/////////////////////////////
+    String string_student_number;
+
+    //////////////Intent//////////////////////////////
+    Intent intent_RecoBackgroundMonitoringService;
+    Intent intent_MenuActivity;
+
+    /////////////Boolean//////////////////////////////
+    boolean login_Check;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        editText_student_number = (EditText) findViewById(R.id.editText_student_number);//학번
+        /**
+         * 학번 변수와 비밀번호 변수를 선언해서 findViewById로 선언합니다.
+         */
+        editText_student_number = (EditText) findViewById(R.id.editText_student_number);
         editText_student_password = (EditText) findViewById(R.id.editText_student_password);//비번
 
-        //사용자가 블루투스를 켜도록 요청합니다.
+        /**
+         *  블루투스매니저와 어댑터를 설정합니다.
+         */
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
 
+        /**
+         *  블루투스를 자동적으로 On합니다.
+         */
         if(mBluetoothAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON ||
                 mBluetoothAdapter.getState() == mBluetoothAdapter.STATE_ON){
-//            mBluetoothAdapter.disable();
-        }
-        else {
-            mBluetoothAdapter.enable();
-        }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Log.i("MainActivity", "The location permission (ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION) is not granted.");
-            } else {
-                Log.i("MainActivity", "The location permission (ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION) is already granted.");
-            }
+        } else {
+                mBluetoothAdapter.enable();
         }
 
+        /**
+         * 로그인 했던 아이디 불러오기
+         *
+         * sharedPreferences를 이용해서 학번과 비밀번호를 저장한다.
+         * 먼저 getSharedPreferences()함수를 이용하여 저장될 변수명을 선언한다.
+         * getSharedPreferences의 파라미터는 저장할 변수명과 모드를 입력해야한다.
+         *
+         */
+        sharedPreferences_student_number = getSharedPreferences("student_number",0);
+        string_student_number = sharedPreferences_student_number.getString("student_number", "");
+        editText_student_number.setText(string_student_number);
 
-        //아이디 저장된거 불러오기
-
-        SharedPreferences sharedPreferences = getSharedPreferences("student_number",0);
-        String str=sharedPreferences.getString("student_number","");
-        editText_student_number.setText(str);
-
-        Intent intent = new Intent(this,RecoBackgroundMonitoringService.class);
-        startService(intent);
-
-
+        /**
+         * 레코 모니터링 백그라운드 서비스를 실행하여 교실 내부인지 외부인지를 확인시켜준다.
+         */
+        intent_RecoBackgroundMonitoringService = new Intent(this,RecoBackgroundMonitoringService.class);
+        startService(intent_RecoBackgroundMonitoringService);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Log.i("MainActivity", "The location permission (ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION) is not granted.");
-            } else {
-                Log.i("MainActivity", "The location permission (ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION) is already granted.");
-            }
-        }
+
     }
 
     public void onButton1Clicked(View v) {
 
-//        ServerThread serverThread = new ServerThread(REQUEST_LOGIN_NUMBER,editText_student_number.getText().toString(),editText_student_password.getText().toString(),true);
-//        serverThread.start();
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        login_Check = serverThread.request_attendance();
+        /**
+         *  서버스레드 클래스 변수를 설정하고 생성자를 불러옵니다.
+         *  불러온 뒤에는 start()메소드를 실행합니다.
+         *  서버 요청을 한뒤 데이터를 받기까지 시간이 걸리므로 약 1초의 시간동안 스레드를 sleep합니다.
+         *  스레드가 깨어나면 서버 스레드의 request_attendance메소드를 불러와 Boolean으로 Ture, false를 불러옵니다.
+         */
+        serverThread = new ServerThread(REQUEST_LOGIN_NUMBER,editText_student_number.getText().toString(),editText_student_password.getText().toString(),true);
+        serverThread.start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        login_Check = serverThread.request_attendance();
 
+//        login_Check = true;
 
-        login_Check = true;  ///// No server
+        /**
+         * 서버에서 받아온 로그인 체크를 통해 True 이면 Menu액티비티를 실행합니다.
+         * 이때 로그인 아이디를 Preferences를 통해 저장을 합니다.
+         * 로그인 정보가 틀리면 Toast 메세지를 통해 "학번 또는 비밀번호를 확인해주세요" 라는 문구를 띄어준다.
+         */
 
         if (login_Check == true) {
 
-            SharedPreferences sharedPreferences = getSharedPreferences("student_number", 0);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("student_number",editText_student_number.getText().toString());
+            sharedPreferences_student_number = getSharedPreferences("student_number", 0);
+            editor = sharedPreferences_student_number.edit();
+            editor.putString("student_number", editText_student_number.getText().toString());
             editor.commit();
 
-            Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_LONG).show();
-
-            Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-            intent.putExtra("student_number", editText_student_number.getText().toString());
-            startActivity(intent);
-
+            intent_MenuActivity = new Intent(getApplicationContext(), MenuActivity.class);
+            startActivity(intent_MenuActivity);
             finish();
         } else {
             Toast.makeText(getApplicationContext(), "학번 또는 비밀번호를 확인해주세요", Toast.LENGTH_LONG).show();
