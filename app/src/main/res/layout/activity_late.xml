@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.inhm.project_heatcon.Late">
+    tools:context="com.example.inhm.project_heatcon.Late"
+    android:background="#ffffff">
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,7 +21,8 @@
         android:layout_marginTop="149dp"
         android:textSize="50dp"
         android:ellipsize="end"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textColor="#000000" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,7 +34,8 @@
         android:layout_alignParentStart="true"
         android:textSize="30dp"
         android:ellipsize="end"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textColor="#3a3a3a" />
 
 
     <TextView
@@ -40,9 +43,10 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/text_late"
+        android:layout_marginTop="48dp"
         android:layout_below="@+id/textView_date"
-        android:layout_toEndOf="@+id/textView_date"
-        android:layout_marginTop="45dp" />
+        android:layout_centerHorizontal="true"
+        android:textColor="#000000" />
 
     <ListView
         android:layout_width="wrap_content"

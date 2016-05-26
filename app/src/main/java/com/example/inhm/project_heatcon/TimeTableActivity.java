@@ -2,6 +2,7 @@ package com.example.inhm.project_heatcon;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ public class TimeTableActivity extends AppCompatActivity {
 
 
     ///////////////String[]////////////////////
-    String[] txtAr;
     String[] lecture_infomation;
     String[] lecture_name;
     String[] lecture_week;
@@ -36,21 +36,27 @@ public class TimeTableActivity extends AppCompatActivity {
     int color_text;
     ///////////////String////////////////////
     String input;
-
+    String string_student_number;
     ///////////////ArrayList////////////////////
     ArrayList<Lecture> lectureArrayList = new ArrayList<Lecture>();
 
     ///////////////TextView////////////////////
     TextView textView;
-
+    TextView student_number_textView;
     ///////////////Intent////////////////////
     Intent intent_get;
+    SharedPreferences sharedPreferences_student_number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_table);
 
+        sharedPreferences_student_number = getSharedPreferences("student_number",0);
+        string_student_number = sharedPreferences_student_number.getString("student_number", "");
+
+        student_number_textView = (TextView)findViewById(R.id.student_number);
+        student_number_textView.setText(string_student_number);
         /**
          * 인텐트를 받아옵니다.
          */
@@ -120,32 +126,32 @@ public class TimeTableActivity extends AppCompatActivity {
 
                 switch(i){
                     case 0:
-                        color_background = Color.YELLOW;
+                        color_background = Color.argb(255,219,222,130);
                         color_text = Color.BLACK;
                         break;
                     case 1:
-                        color_background= Color.BLUE;
-                        color_text = Color.WHITE;
+                        color_background= Color.argb(255,158,211,232);
+                        color_text = Color.BLACK;
                         break;
                     case 2:
-                        color_background= Color.WHITE;
+                        color_background= Color.argb(255,138,219,129);
                         color_text = Color.BLACK;
                         break;
                     case 3:
-                        color_background = Color.MAGENTA;
+                        color_background = Color.argb(255,253,170,203);
                         color_text = Color.BLACK;
                         break;
                     case 4:
-                        color_background = Color.CYAN;
+                        color_background = Color.argb(255,154,152,230);
                         color_text = Color.BLACK;
                         break;
                     case 5:
-                        color_background = Color.DKGRAY;
-                        color_text = Color.WHITE;
+                        color_background = Color.argb(255,250,195,164);
+                        color_text = Color.BLACK;
                         break;
                     case 6:
-                        color_background = Color.GRAY;
-                        color_text = Color.WHITE;
+                        color_background = Color.argb(255,255,238,109);
+                        color_text = Color.BLACK;
                         break;
                     case 7:
                         color_background = Color.GREEN;

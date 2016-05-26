@@ -12,9 +12,8 @@ import java.net.Socket;
  */
 public class ServerThread extends Thread{
 
-
     Socket socket;                              //소켓통신을 위한 소켓 객체 변수 생성
-    String host = "54.199.246.45";               //소켓 통신을 위한 서버 host 주소
+    String host = "54.238.188.178";               //소켓 통신을 위한 서버 host 주소
     int port = 8000;                            //소켓 통신을 위한 서버 port 번호
 
     private int REQUEST_NUMBER;
@@ -29,8 +28,6 @@ public class ServerThread extends Thread{
     private static final int REQUEST_ABSENT_NUMBER = 8;
     private static final int REQUEST_FOOD_NUMBER = 9;
 
-
-    String student_name;
     String student_number;
     String lecture_number;
     String check_attendance;
@@ -38,23 +35,15 @@ public class ServerThread extends Thread{
 
     String attendance_number;
     String request_lecture_list;
-
     String check_check;
-
     String today_date;
-
     String mid_score;
     String final_score;
-
     String str_late;
     String str_absent;
     String str_food;
 
-    String request_late;
-    String request_absent;
-
     boolean server_request_login = false;
-
 
     ServerThread(){};
     ServerThread(int number){
@@ -120,12 +109,9 @@ public class ServerThread extends Thread{
     public String request_late() { return str_late;}
     public String request_absent() { return str_absent;}
     public String request_food_list() {return str_food;};
-    public void run() {
-        switch(REQUEST_NUMBER){
-
-            case 1:
-                //로그인 정보 확인하기
-                try {
+    public synchronized void request1() {
+        synchronized (this) {
+            try {
                 Looper.prepare();
 
                 Log.d("Run", "서버접속");
@@ -133,7 +119,7 @@ public class ServerThread extends Thread{
 
                 Log.d("Run", socket.toString());
                 String output;
-                output = "1," + student_number+","+student_password;
+                output = "1," + student_number + "," + student_password;
                 DataOutputStream outstream = new DataOutputStream(socket.getOutputStream());
                 outstream.writeUTF(output);
                 outstream.flush();
@@ -147,6 +133,14 @@ public class ServerThread extends Thread{
             } catch (Exception e) {
                 Log.d("Run", e.toString());
             }
+        }
+    }
+    public void run() {
+        switch(REQUEST_NUMBER){
+
+            case 1:
+                //로그인 정보 확인하기
+                request1();
                 break;
             case 2:
                 //여태까지 출석정보 확인하기
@@ -193,7 +187,6 @@ public class ServerThread extends Thread{
                     DataInputStream instream = new DataInputStream(socket.getInputStream());
                     mid_score = instream.readUTF();
                     Log.d("LOGINING***************",""+mid_score);
-//                    Log.d("Run", "서버로 부터 받은 데이터" + input.toString());
 
                     instream.close();
                     outstream.close();
@@ -222,7 +215,6 @@ public class ServerThread extends Thread{
 
                     DataInputStream instream = new DataInputStream(socket.getInputStream());
                     final_score = instream.readUTF();
-//                    Log.d("Run", "서버로 부터 받은 데이터" + input.toString());
 
                     instream.close();
                     outstream.close();
@@ -278,11 +270,6 @@ public class ServerThread extends Thread{
                     Log.d("Run", outstream.toString());
                     outstream.flush();
 
-//                    DataInputStream instream = new DataInputStream(socket.getInputStream());
-//                    input = instream.readUTF();
-//                    Log.d("Run", "서버로 부터 받은 데이터" + input.toString());
-
-//                    instream.close();
                     outstream.close();
                     socket.close();
                     Looper.loop();

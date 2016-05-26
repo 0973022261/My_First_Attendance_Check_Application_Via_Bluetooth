@@ -8,7 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.inhm.project_heatcon.TimeTableActivity">
+    tools:context="com.example.inhm.project_heatcon.TimeTableActivity"
+    android:background="#ffffff">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -21,15 +22,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="학번:"
-            android:id="@+id/textView" />
+            android:id="@+id/textView"
+            android:textColor="#000000" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView8"
-            android:text="20133252" />
+            android:id="@+id/student_number"
+            android:textColor="#000000" />
 
     </LinearLayout>
+
 
     <LinearLayout
         android:orientation="horizontal"
@@ -42,7 +45,9 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="시간표"
-            android:id="@+id/textView10" />
+            android:id="@+id/textView10"
+            android:textColor="#000000"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <HorizontalScrollView
@@ -67,7 +72,8 @@
                     android:orientation="horizontal"
                     android:layout_width="500dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_gravity="center_horizontal"
+                    android:background="#374e8b53">
 
 
                     <TextView
@@ -84,35 +90,40 @@
                         android:text="월"
                         android:id="@+id/textView12"
                         android:layout_weight="1"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textColor="#000000" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="화"
                         android:id="@+id/textView13"
                         android:layout_weight="1"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textColor="#000000" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="수"
                         android:id="@+id/textView14"
                         android:layout_weight="1"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textColor="#000000" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="목"
                         android:id="@+id/textView15"
                         android:layout_weight="1"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textColor="#000000" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="금"
                         android:id="@+id/textView16"
                         android:layout_weight="1"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textColor="#000000" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -124,12 +135,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:layout_weight="5">
+                        android:layout_weight="5"
+                        android:background="#ffffff">
 
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="30dp"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:background="#374e8b53">
 
                             <TextView
                                 android:layout_width="20dp"
@@ -137,70 +150,80 @@
                                 android:text="A"
                                 android:id="@+id/textView17"
                                 android:layout_weight="1"
-                                android:gravity="center" />
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="B"
                                 android:id="@+id/textView28"
                                 android:layout_weight="1"
-                                android:gravity="center" />
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="C"
                                 android:id="@+id/textView19"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="D"
                                 android:id="@+id/textView27"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="E"
                                 android:id="@+id/textView21"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="F"
                                 android:id="@+id/textView22"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="G"
                                 android:id="@+id/textView23"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="H"
                                 android:id="@+id/textView24"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="I"
                                 android:id="@+id/textView25"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="40dp"
                             android:layout_height="match_parent"
-                            >
+                            android:layout_marginLeft="5dp"
+                            android:background="#374e8b53">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -208,7 +231,8 @@
                                 android:text="1교시"
                                 android:id="@+id/textView30"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -216,7 +240,8 @@
                                 android:text="2교시"
                                 android:id="@+id/textView31"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -224,7 +249,8 @@
                                 android:text="3교시"
                                 android:id="@+id/textView32"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -232,7 +258,8 @@
                                 android:text="4교시"
                                 android:id="@+id/textView33"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -240,7 +267,8 @@
                                 android:text="5교시"
                                 android:id="@+id/textView34"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
 
                             <TextView
@@ -249,7 +277,8 @@
                                 android:text="6교시"
                                 android:id="@+id/textView35"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -257,7 +286,8 @@
                                 android:text="7교시"
                                 android:id="@+id/textView36"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -265,7 +295,8 @@
                                 android:text="8교시"
                                 android:id="@+id/textView37"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -273,7 +304,8 @@
                                 android:text="9교시"
                                 android:id="@+id/textView38"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -281,7 +313,8 @@
                                 android:text="10교시"
                                 android:id="@+id/textView39"
                                 android:layout_weight="1"
-                                android:gravity="center"/>
+                                android:gravity="center"
+                                android:textColor="#000000" />
 
                         </LinearLayout>
 

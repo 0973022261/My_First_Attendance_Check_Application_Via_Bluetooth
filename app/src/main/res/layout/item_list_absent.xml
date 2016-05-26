@@ -3,7 +3,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:weightSum="1"
-    android:background="#2b2b2b">
+    android:background="#374e8b53">
 
     <LinearLayout
         android:orientation="vertical"
@@ -19,7 +19,7 @@
             android:text="New Text"
             android:id="@+id/absent_date"
             android:textSize="30dp"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:ellipsize="end"
             android:singleLine="true"/>
 

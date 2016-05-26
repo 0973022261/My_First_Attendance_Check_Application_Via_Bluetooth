@@ -62,12 +62,6 @@ public class RecoMonitoringActivity extends RecoActivity implements RECOMonitori
 
     private static final String TAG = "ATE";
 
-    boolean check =false;
-
-    String lecture_check;
-    String student_number;
-    String lecture_number;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

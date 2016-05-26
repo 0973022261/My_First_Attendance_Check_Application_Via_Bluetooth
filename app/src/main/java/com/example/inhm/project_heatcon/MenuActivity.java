@@ -46,6 +46,7 @@ public class MenuActivity extends Activity {
          */
         logInActivity.sharedPreferences_student_number = getSharedPreferences("student_number",0);
         student_number = logInActivity.sharedPreferences_student_number.getString("student_number", "");
+        Log.d("MenuActivity",student_number);
     }
 
     public void onButtonAttendClicked(View v) {
@@ -56,6 +57,7 @@ public class MenuActivity extends Activity {
          * 받은 수강목록 리스트를 수강목록액티비티에 인텐트로 넘겨준다.
          */
         serverThread = new ServerThread(serverThread.REQUEST_MENU_NUMBER(),student_number);
+        Log.d("MenuActivity","서버 접속중");
         serverThread.start();
         try {
             Thread.sleep(1000);
@@ -64,12 +66,13 @@ public class MenuActivity extends Activity {
         }
         input_lecture_list = serverThread.request_lecture_list();
 
-
-//        input = "1,2,3,4,5/OS,COMP,디마커,모바일커뮤니케이션,광고학개론/12,23,24,15,34/AB,AC,FA,BD,AB/921,921,921,921,921/1,2,1,2,1/09:00-10:30,09:00-10:30,09:00-10:30,09:00-10:30,15:00-15:30";
+        Log.d("MenuActivity","수강목록 리스트 request 값 = "+input_lecture_list);
 
         intent_AttendanceActivity = new Intent(this, AttendanceActivity.class);
         intent_AttendanceActivity.putExtra("lecture_list", student_number + " " + input_lecture_list);
         intent_AttendanceActivity.putExtra("student_number", student_number);
+
+        Log.d("MenuActivity", "다음 수강목록화면으로 넘길때 인텐트 값 = "+student_number + " " + input_lecture_list);
         startActivity(intent_AttendanceActivity);
     }
 
@@ -81,6 +84,7 @@ public class MenuActivity extends Activity {
          * 받은 수강목록 리스트를 수강목록액티비티에 인텐트로 넘겨준다.
          */
         serverThread = new ServerThread(serverThread.REQUEST_MENU_NUMBER(),student_number);
+        Log.d("MenuActivity","서버 접속중");
         serverThread.start();
         try {
             Thread.sleep(1000);
@@ -88,13 +92,12 @@ public class MenuActivity extends Activity {
             e.printStackTrace();
         }
         input_lecture_list = serverThread.request_lecture_list();
-
-
-//        input = "1,2,3,4,5/OS,COMP,디마커,모바일커뮤니케이션,광고학개론/12,23,24,15,34/A2,AC,A1,2D,A4/921,921,921,921,921/1,2,1,2,1/09:00-10:30,09:00-10:30,09:00-10:30,09:00-10:30,15:00-15:30";
+        Log.d("MenuActivity","수강목록 리스트 request 값 = "+input_lecture_list);
 
         intent_TimeTableActivity = new Intent(this, TimeTableActivity.class);
         intent_TimeTableActivity.putExtra("student_number", student_number);
         intent_TimeTableActivity.putExtra("input",input_lecture_list);
+        Log.d("MenuActivity", "다음 수강목록화면으로 넘길때 인텐트 값 = " + student_number + " " + input_lecture_list);
         startActivity(intent_TimeTableActivity);
     }
 
@@ -107,6 +110,7 @@ public class MenuActivity extends Activity {
          * 받은 수강목록 리스트를 FoodList액티비티에 인텐트로 넘겨준다.
          */
         serverThread = new ServerThread(serverThread.REQUEST_FOOD_NUMBER());
+        Log.d("MenuActivity", "서버 접속중");
         serverThread.start();
         try {
             Thread.sleep(1000);
@@ -114,17 +118,15 @@ public class MenuActivity extends Activity {
             e.printStackTrace();
         }
         input_food_list = serverThread.request_food_list();
-
-//        input = "김치찌개,된장국,시래기국/5000,4000,3000";
+        Log.d("MenuActivity","서버에 요청한 음식리스트 request 값 = "+ input_food_list);
         intent_FoodList = new Intent(this, FoodList.class);
         intent_FoodList.putExtra("student_number", student_number);
         intent_FoodList.putExtra("food_list",input_food_list);
+        Log.d("MenuActivity", "다음 학식메뉴 액티비티로 넘기는 인텐트 값 = " + input_food_list);
         startActivity(intent_FoodList);
     }
 
     public void onButtonUseInfoClicked(View v) {
-
-
         /**
          * 환경설정 버튼을 누르면 환경설정 액티비티가 실행된다.
          */

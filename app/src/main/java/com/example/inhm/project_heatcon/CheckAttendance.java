@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -16,13 +17,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.perples.recosdk.RECOBeacon;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class CheckAttendance extends AppCompatActivity {
+import static com.example.inhm.project_heatcon.R.color.colorYehui;
 
+public class CheckAttendance extends AppCompatActivity {
 
     ///////////////ServerThread////////////////////
     ServerThread serverThread = new ServerThread();
@@ -32,6 +37,8 @@ public class CheckAttendance extends AppCompatActivity {
     private static final int ATTENDANCE = 2;
     private static final int LATE = 3;
     private static final int BEFORE = 4;
+    private static final int BUTTON_ENABLE = 5;
+    private static final int BUTTON_DISABLE = 6;
 
     boolean check_time =false;
 
@@ -40,7 +47,7 @@ public class CheckAttendance extends AppCompatActivity {
     TextView textView_week;
     TextView textView_date;
     TextView textView_attendance_number;
-
+    TextView attendance_number_text;
     ///////////////Button////////////////
     Button textView_absent_number;
     Button textView_late_number;
@@ -70,6 +77,8 @@ public class CheckAttendance extends AppCompatActivity {
     String request_final_score;
     String request_absent;
     String request_late;
+    String beacon_minor;
+    String beacon_check;
 
     ////////////////String[]///////////////
     String[] week_change;
@@ -77,7 +86,6 @@ public class CheckAttendance extends AppCompatActivity {
     String[] date_time;
     String[] lecture_week_split_by_comma;
     char[] lecture_date_split_by_comma;
-    char [] week;
     char [] attendance_number_arr;
 
     /////////////////////int////////////////
@@ -96,9 +104,7 @@ public class CheckAttendance extends AppCompatActivity {
     Intent intent_Absent;
     Intent intent_Late;
 
-    public static Context mContext;
-    MyThread myThread;
-
+    SharedPreferences beacon_check_pr;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
@@ -106,6 +112,7 @@ public class CheckAttendance extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_attendance);
+
 
         /**
          * 버튼과 텍스트뷰를 레이아웃에서 찾아서 메모리에 올린다.
@@ -115,6 +122,7 @@ public class CheckAttendance extends AppCompatActivity {
         textView_week = (TextView)findViewById(R.id.textView_week);
         textView_date = (TextView)findViewById(R.id.textView_date);
         textView_attendance_number = (TextView)findViewById(R.id.attendance_number);
+        attendance_number_text = (TextView)findViewById(R.id.attendance_number);
         textView_absent_number = (Button)findViewById(R.id.absent_number);
         textView_late_number = (Button)findViewById(R.id.late_number);
 
@@ -134,7 +142,7 @@ public class CheckAttendance extends AppCompatActivity {
         student_number = (String) intent_get.getSerializableExtra("student_number");
         lecture_number = (String) intent_get.getSerializableExtra("lecture_number");
         lecture_start_time = (String) intent_get.getSerializableExtra("lecture_start_time");
-
+        beacon_minor = (String) intent_get.getSerializableExtra("beacon_minor");
         /**
          * 받아온 데이터(week)를 토큰(,) 으로 나눕니다.
          * 받아온 데이터(date)를 Char단위로 나눕니다.
@@ -146,33 +154,21 @@ public class CheckAttendance extends AppCompatActivity {
          * 텍스트 뷰의 텍스트를 설정합니다.
          */
         textView_name.setText(lecture_name);
-        textView_week.setText(lecture_week_split_by_comma[0]+lecture_date_split_by_comma[0]+"교시");
-        textView_date.setText(lecture_week_split_by_comma[1]+lecture_date_split_by_comma[1]+"교시");
+        textView_date.setText(lecture_week_split_by_comma[0] + lecture_date_split_by_comma[0] + "교시");
+        textView_week.setText(lecture_week_split_by_comma[1]+lecture_date_split_by_comma[1]+"교시");
 
-        /**
-         * 출결현황(출석,지각,결석) 데이터를 알기 위하여 attendance_number에 각각 저장한다.
-         */
-        attendance_number_arr = attendance_number.toCharArray();
 
-        for(int i = 0 ; i < attendance_number_arr.length;i++) {
-            if(attendance_number_arr[i] == '0'){
-                attendance++;
-            }else if( attendance_number_arr[i] == '1') {
-                absent++;
-            } else if( attendance_number_arr[i] == '2') {
-                late++;
-            }
-        }
         /**
          * 요일을 token(,)으로 따로 저장합니다. ex- 1,2 (월,화)
          */
+        Log.d("MONIORCHECK", "week_number =" +week_number);
         week_change = week_number.split(",");
 
         /**
          * 오늘 년도, 월, 날짜, 시간,분,초 단위의 포멧을 설정합니다.
          * Korea 지역의 date를 가져옵니다.
          */
-        format = new String("yyyyMMddHHmmss");
+        format = new String("yyyy-MM-dd");
         sdf = new SimpleDateFormat(format, Locale.KOREA);
         today_date = sdf.format(new Date());
 
@@ -196,7 +192,7 @@ public class CheckAttendance extends AppCompatActivity {
         }else if(strweek == "5"){
             strweek = "금요일";
         }
-                mContext = this;
+        buttoncheck = "1";
     }
 
     @Override
@@ -205,15 +201,14 @@ public class CheckAttendance extends AppCompatActivity {
 
         /**
          *  출석요청 버튼을 눌렀는지 안눌렀는지를 판단합니다.
-         *  출석이 진행되었는지 판단합니다.
+         *  출석이 진행되었었는지 판단합니다.
          */
-        SharedPreferences sharedPreferences = getSharedPreferences("FLAG", 0);
-        str=sharedPreferences.getString("FLAG","");
-        SharedPreferences sharedPreferences2 = getSharedPreferences(lecture_number+"BUTTONCHECK", 0);
-        buttoncheck = sharedPreferences2.getString(lecture_number+"BUTTONCHECK","");
+        preferences = getSharedPreferences(student_number+lecture_number + "BUTTONCHECK", 0);
+        buttoncheck = preferences.getString(student_number+lecture_number + "BUTTONCHECK", "");
+        Log.d("BUTTONCHECK","1"+buttoncheck);
 
         /**
-         * 출결상황을 다시 한번 띄어줍니다.(업데이트 목적)
+         * 출결현황(출석,지각,결석) 데이터를 알기 위하여 attendance_number에 각각 저장한다.
          */
         serverThread = new ServerThread(serverThread.REQUEST_ATTENDANCE_NUMBER(),student_number,lecture_number);
         serverThread.start();
@@ -225,9 +220,11 @@ public class CheckAttendance extends AppCompatActivity {
         attendance_number = serverThread.request_attendance_number();
         attendance_number_arr = attendance_number.toCharArray();
 
+        Log.d("attendance_number", "number = " + attendance_number_arr.length);
         attendance = 0;
         absent = 0;
         late = 0;
+
 
         for(int i = 0 ; i < attendance_number_arr.length;i++) {
             if(attendance_number_arr[i] == '0'){
@@ -243,6 +240,9 @@ public class CheckAttendance extends AppCompatActivity {
         textView_absent_number.setText("" + absent);
         textView_late_number.setText("" + late);
 
+        attendance = 0;
+        absent = 0;
+        late = 0;
         /**
          * 버튼이 체크되었는지 확인합니다.
          *
@@ -256,34 +256,58 @@ public class CheckAttendance extends AppCompatActivity {
          * 출석체크가 이전에 진행되지 않았으면 버튼을 활성화 시킵니다.
          * 출석체크가 이미 진행되었다면 버튼을 비활성화 시킵니다.
          */
-        if(buttoncheck.equals("FALSE")){
-            if(week_change[0] == strweek || week_change[1] == strweek){
-                if(str.equals("TRUE")) {
-                    button_attendance_check.setEnabled(true);
-                    MyThread myThread = new MyThread();
-                    myThread.start();
+
+
+        beacon_check_pr = getSharedPreferences("beacon_check", 0);
+        beacon_check = beacon_check_pr.getString("beacon_check", "");
+        Log.d("MONIORCHECK", "beacon_check =" + beacon_check);
+
+        preferences = getSharedPreferences(student_number+lecture_number + "BUTTONCHECK", 0);
+        editor = preferences.edit();
+        Log.d("MONIORCHECK", "week_change[0] = "+week_change[0]);
+        Log.d("MONIORCHECK", "week_change[1] = "+week_change[1]);
+        Log.d("MONIORCHECK", strweek);
+        Log.d("MONIORCHECK", "buttoncheck = "+buttoncheck);
+        Log.d("MONIORCHECK", "beaconcheck = "+beacon_check);
+        Log.d("MONIORCHECK", "minor = "+beacon_minor);
+        if(buttoncheck.equals(student_number+lecture_number+"FALSE")){
+            if(week_change[0].equals(strweek) || week_change[1].equals(strweek)){
+                if(beacon_check.equals(beacon_minor+"TRUE")) {
+                    Log.d("MONIORCHECK", "1");
+
+                    Toast.makeText(getApplication(),"출석이 가능한 지역입니다.",Toast.LENGTH_LONG).show();
+
+                        handler.sendEmptyMessage(BUTTON_ENABLE);
+                        MyThread myThread = new MyThread();
+                        myThread.start();
                 }
                 else{
-                    button_attendance_check.setEnabled(false);
+                    Log.d("MONIORCHECK", "2");
+
+                    handler.sendEmptyMessage(BUTTON_DISABLE);
                 }
             } else {
-                button_attendance_check.setEnabled(false);
+                Log.d("MONIORCHECK", "3");
+                buttoncheck = student_number+lecture_number + "FALSE";
+                handler.sendEmptyMessage(BUTTON_DISABLE);
             }
-        } else {
-            button_attendance_check.setEnabled(false);
+        } else if(buttoncheck.equals("")){
+            Log.d("MONIORCHECK", "4");
+            editor.putString(student_number+lecture_number + "BUTTONCHECK", student_number+lecture_number+"FALSE");
+            editor.commit();
+
+            handler.sendEmptyMessage(BUTTON_DISABLE);
+
+        }else{
+            Log.d("MONIORCHECK", "5");
+
+            handler.sendEmptyMessage(BUTTON_DISABLE);
         }
+
+
     }
 
     public void onButtonTestClicked(View v) {
-
-        /**
-         * 새로고침 버튼을 클릭하면 BUTTONCHECK를 FALSE로 바꿔준다.
-         */
-        preferences = getSharedPreferences(lecture_number+"BUTTONCHECK",0);
-        editor = preferences.edit();
-        editor.putString(lecture_number+"BUTTONCHECK", "FALSE");
-        editor.commit();
-
         /**
          * 블루투스 매니저와 어댑터를 설정합니다.
          */
@@ -313,13 +337,10 @@ public class CheckAttendance extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         /**
          * onResume()함수를 불러옵니다.
          */
-        if(mContext != null) {
-            ((CheckAttendance) (CheckAttendance.mContext)).onResume();
-        }
+        onResume();
     }
     public void onButton1Clicked(View v) {
 
@@ -359,7 +380,6 @@ public class CheckAttendance extends AppCompatActivity {
         String strCurTime;
         String[] Time;
         public void run() {
-
             /**
              * 현재 시간을 받아옵니다 ("시 : 분")
              */
@@ -374,9 +394,9 @@ public class CheckAttendance extends AppCompatActivity {
              */
             if(week_number.length() >=2) {
                 date1 = lecture_start_time.split("-");
-                if(Character.toString(week[0]).equals(strweek)){
+                if(week_change[0].equals(strweek)){
                         date_time = date1[0].split(":");
-                    } else if(Character.toString(week[1]).equals(strweek)){
+                    } else if(week_change[1].equals(strweek)){
                         date_time = date1[1].split(":");
                     }
 
@@ -420,45 +440,101 @@ public class CheckAttendance extends AppCompatActivity {
     Handler handler = new Handler(){
         public void handleMessage(Message msg){
 
-            preferences = getSharedPreferences("BUTTONCHECK",0);
+            preferences = getSharedPreferences(student_number+lecture_number+"BUTTONCHECK",0);
             editor = preferences.edit();
 
             switch (msg.what){
                 case 1:
                     //수업전
                     button_attendance_check.setEnabled(check_time);
-                    editor.putString(lecture_number+"BUTTONCHECK", "FALSE");
+                    editor.putString(student_number+lecture_number + "BUTTONCHECK", student_number+lecture_number+"FALSE");
                     editor.commit();
+                    Toast.makeText(getApplicationContext(),"수업 시간 전입니다.",Toast.LENGTH_LONG).show();
                     break;
                 case 2:
                     //수업 시간 부터 5분까지
                     attendance_number += "0";
-                    editor.putString(lecture_number+"BUTTONCHECK", "TRUE");
+                    editor.putString(student_number + lecture_number + "BUTTONCHECK", student_number + lecture_number + "TRUE");
                     editor.commit();
                     Toast.makeText(getApplicationContext(),"출석이 정상처리되었습니다.",Toast.LENGTH_LONG).show();
                     check_check = "0";
+
+                    button_attendance_check.setBackgroundColor(Color.argb(255, 78, 139, 83));
+                    button_attendance_check.setText("출석");
+                    button_attendance_check.setEnabled(false);
                     serverThread = new ServerThread(serverThread.REQUEST_ATTENDANCE_CHECK_NUMBER(),student_number,lecture_number,attendance_number,check_check,today_date);
                     serverThread.start();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case 3:
                     //지각
                     attendance_number += "2";
-                    editor.putString(lecture_number+"BUTTONCHECK", "TRUE");
+                    editor.putString(student_number + lecture_number + "BUTTONCHECK", student_number + lecture_number + "TRUE");
                     editor.commit();
                     Toast.makeText(getApplicationContext(),"출석이 지각처리되었습니다.",Toast.LENGTH_LONG).show();
+
+
                     check_check = "2";
+
+                    button_attendance_check.setBackgroundColor(Color.argb(255, 78, 139, 83));
+                    button_attendance_check.setTextColor(Color.WHITE);
+                    button_attendance_check.setText("지각");
+                    button_attendance_check.setEnabled(false);
                     serverThread = new ServerThread(serverThread.REQUEST_ATTENDANCE_CHECK_NUMBER(),student_number,lecture_number,attendance_number,check_check,today_date);
                     serverThread.start();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case 4:
                     //결석
                     attendance_number += "1";
-                    editor.putString(lecture_number+"BUTTONCHECK","TRUE");
+
+
+                    editor.putString(student_number + lecture_number + "BUTTONCHECK", student_number + lecture_number + "TRUE");
                     editor.commit();
                     Toast.makeText(getApplicationContext(),"출석이 결석처리되었습니다.",Toast.LENGTH_LONG).show();
                     check_check = "1";
+                    button_attendance_check.setBackgroundColor(Color.argb(255, 78, 139, 83));
+                    button_attendance_check.setText("결석");
+                    button_attendance_check.setTextColor(Color.WHITE);
+                    button_attendance_check.setEnabled(false);
+
+                    preferences = getSharedPreferences(student_number + lecture_number + "BUTTONCHECK", 0);
+                    buttoncheck = preferences.getString(student_number+lecture_number + "BUTTONCHECK", "");
+
+                    Log.d("CHECKCORSE22", buttoncheck);
+
                     serverThread = new ServerThread(serverThread.REQUEST_ATTENDANCE_CHECK_NUMBER(),student_number,lecture_number,attendance_number,check_check,today_date);
                     serverThread.start();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 5:
+                    //버튼 활성
+                    button_attendance_check.setEnabled(true);
+                    button_attendance_check.setTextColor(Color.DKGRAY);
+
+                    break;
+
+                case 6:
+                    //버튼 비활성
+                    button_attendance_check.setEnabled(false);
+                    button_attendance_check.setTextColor(Color.LTGRAY);
+
+                    break;
+                case 7:
+                    //출석 결석 지각횟수 증가.
                     break;
             }
         }

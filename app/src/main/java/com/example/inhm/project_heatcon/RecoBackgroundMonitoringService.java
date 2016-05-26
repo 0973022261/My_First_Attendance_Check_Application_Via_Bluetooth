@@ -68,15 +68,24 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
      */
 
     private long mScanDuration = 1 * 1000L;
-    private long mSleepDuration = 10 * 1000L;
-    private long mRegionExpirationTime = 60 * 1000L;
+    private long mSleepDuration = 1 * 1000L;
+    private long mRegionExpirationTime = 30 * 1000L;
 
     private int mNotificationID = 9999;
     private static final int OUR_BEACON_MAJOR = 921;
+    public int OUR_BEACON_MINOR;
+    ///////////////SharedPreferences//////////////////
+    SharedPreferences beacon_minor_pre;
+    SharedPreferences.Editor beacon_minor_editor;
+
+    ///////////////SharedPreferences//////////////////
+    SharedPreferences beacon_check;
+    SharedPreferences.Editor editor;
+
     private RECOBeaconManager mRecoManager;
     private ArrayList<RECOBeaconRegion> mRegions;
 
-    SharedPreferences preferences;
+    String beacon_minor;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -114,8 +123,17 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
 
     private void generateBeaconRegion() {
 
+        beacon_minor_pre = getSharedPreferences("beaconminor",0);
+        beacon_minor = beacon_minor_pre.getString("beaconminor", "");
+        OUR_BEACON_MINOR = Integer.parseInt(beacon_minor);
+
+        Log.d("RecoBackgroundMonitoringService",""+OUR_BEACON_MINOR);
+
+//        OUR_BEACON_MINOR = 4;
+//        Log.d("RecoBackgroundMonitoringService",""+OUR_BEACON_MINOR);
+
         RECOBeaconRegion recoRegion;
-        recoRegion = new RECOBeaconRegion(RecoActivity.RECO_UUID, OUR_BEACON_MAJOR, "교실");
+        recoRegion = new RECOBeaconRegion(RecoActivity.RECO_UUID, OUR_BEACON_MAJOR,OUR_BEACON_MINOR,"교실");
         recoRegion.setRegionExpirationTimeMillis(mRegionExpirationTime);
         mRegions.add(recoRegion);
     }
@@ -129,6 +147,7 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
 
         mRecoManager.setScanPeriod(mScanDuration);
         mRecoManager.setSleepPeriod(mSleepDuration);
+
         for (RECOBeaconRegion region : mRegions) {
             try {
                 mRecoManager.startMonitoringForRegion(region);
@@ -187,8 +206,14 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
          * 최초 실행시, 이 콜백 메소드는 호출되지 않습니다.
          * didDetermineStateForRegion() 콜백 메소드를 통해 region 상태를 확인할 수 있습니다.
          */
+        beacon_check = getSharedPreferences("beacon_check", 0);
+        editor = beacon_check.edit();
+        editor.putString("beacon_check",OUR_BEACON_MINOR+"TRUE");
+        Log.d("MONIORCHECK","beacon_minor = ="+OUR_BEACON_MINOR);
+        editor.commit();
 
-        this.popupNotification("출석이 가능한 지역입니다." + region.getUniqueIdentifier());
+//        this.popupNotification(beacon_minor+"번호의 비콘출석이 가능한 지역입니다." + region.getUniqueIdentifier());
+
     }
 
 
@@ -198,7 +223,12 @@ public class RecoBackgroundMonitoringService extends Service implements RECOMoni
          * 최초 실행시, 이 콜백 메소드는 호출되지 않습니다.
          * didDetermineStateForRegion() 콜백 메소드를 통해 region 상태를 확인할 수 있습니다.
          */
-
+        beacon_check = getSharedPreferences("beacon_check", 0);
+        editor = beacon_check.edit();
+        editor.putString("beacon_check", "FALSE");
+        editor.commit();
+//        CheckAttendance checkAttendance = new CheckAttendance();
+//        checkAttendance.onResume();
         this.popupNotification("비콘지역으로부터 멀어졌습니다." + region.getUniqueIdentifier());
     }
 

@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.inhm.project_heatcon.Mid">
+    tools:context="com.example.inhm.project_heatcon.Mid"
+    android:background="#ffffff">
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,7 +21,8 @@
         android:layout_marginTop="149dp"
         android:textSize="50dp"
         android:ellipsize="end"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textColor="#000000" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,16 +34,17 @@
         android:layout_alignParentStart="true"
         android:textSize="30dp"
         android:ellipsize="end"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textColor="#3a3a3a" />
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
         android:id="@+id/text_mid"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="130dp" />
+        android:layout_marginBottom="130dp"
+        android:textColor="#000000" />
 </RelativeLayout>

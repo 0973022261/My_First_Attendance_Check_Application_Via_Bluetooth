@@ -1,21 +1,24 @@
 package com.example.inhm.project_heatcon;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class AttendanceActivity extends AppCompatActivity {
-
-    private static final String TAG = "Attendance";
 
     ///////////////ServerThread////////////////////
     ServerThread serverThread = new ServerThread();
@@ -54,6 +57,16 @@ public class AttendanceActivity extends AppCompatActivity {
     String lecture_list;
     String week_change_name;
 
+    Intent intent_RecoBackgroundMonitoringService;
+
+    ///////////////SharedPreferences//////////////////
+    SharedPreferences beacon_minor_pre;
+    SharedPreferences.Editor beacon_minor_editor;
+    ///////////////BluetoothManager///////////////////
+    private BluetoothManager mBluetoothManager;                                         //블루투스 매니저 객체 변수
+    private BluetoothAdapter mBluetoothAdapter;                                         //블루투스 어댑터 객체 변수
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,22 +80,35 @@ public class AttendanceActivity extends AppCompatActivity {
         intent_get = getIntent();
         lecture_list = (String) intent_get.getSerializableExtra("lecture_list");
         student_number = (String) intent_get.getSerializableExtra("student_number");
-
+        Log.d("AttendanceActivity", "인텐트 받은 값 ="+lecture_list);
+        Log.d("AttendanceActivity", "인텐트 받은 값 = "+lecture_list + "," +student_number);
 
         /**
          * 수강목록 리스트에는 여러 토큰이 존재한다(" " , "/" , ",")
          * 토큰을 나누어 수강과목정보를 split()메소드로 나눈다.
          */
         lecture_list_split = lecture_list.split(" ");
-        lecture_infomation_split_by_slash = lecture_list_split[1].split("/");
-        lecture_number_split_by_comma = lecture_infomation_split_by_slash[0].split(",");
-        lecture_name_split_by_comma = lecture_infomation_split_by_slash[1].split(",");
-        lecture_week_split_by_comma = lecture_infomation_split_by_slash[2].split(",");
-        lecture_date_split_by_comma = lecture_infomation_split_by_slash[3].split(",");
-        lecture_major_split_by_comma = lecture_infomation_split_by_slash[4].split(",");
-        lecture_minor_split_by_comma = lecture_infomation_split_by_slash[5].split(",");
-        lecture_start_time_split_by_comma = lecture_infomation_split_by_slash[6].split(",");
+        Log.d("AttendanceActivity", ""+lecture_list_split.length);
 
+
+        lecture_infomation_split_by_slash = lecture_list_split[1].split("/");
+        Log.d("AttendanceActivity", ""+lecture_infomation_split_by_slash.length);
+
+        lecture_number_split_by_comma = lecture_infomation_split_by_slash[0].split(",");
+        Log.d("AttendanceActivity", "과목번호 = " + lecture_infomation_split_by_slash[0]);
+
+        lecture_name_split_by_comma = lecture_infomation_split_by_slash[1].split(",");
+        Log.d("AttendanceActivity", "과목이름 = " + lecture_infomation_split_by_slash[1]);
+        lecture_week_split_by_comma = lecture_infomation_split_by_slash[2].split(",");
+        Log.d("AttendanceActivity", "과목요일 = " + lecture_infomation_split_by_slash[2]);
+        lecture_date_split_by_comma = lecture_infomation_split_by_slash[3].split(",");
+        Log.d("AttendanceActivity", "과목시간 = " + lecture_infomation_split_by_slash[3]);
+        lecture_major_split_by_comma = lecture_infomation_split_by_slash[4].split(",");
+        Log.d("AttendanceActivity", "비콘번호 = " + lecture_infomation_split_by_slash[4]);
+        lecture_minor_split_by_comma = lecture_infomation_split_by_slash[5].split(",");
+        Log.d("AttendanceActivity", "비콘번호 = " + lecture_infomation_split_by_slash[5]);
+        lecture_start_time_split_by_comma = lecture_infomation_split_by_slash[6].split(",");
+        Log.d("AttendanceActivity", "시작시간 = " + lecture_infomation_split_by_slash[6]);
 
         /**
          * 수강 요일 자료는 숫자로 넘어오기때문에 숫자를 조건문을통해 월~금까지로 바꿔준다.
@@ -95,15 +121,15 @@ public class AttendanceActivity extends AppCompatActivity {
 
                 if(j != week_toCharArray.length-1) {
                     if (week_toCharArray[j] == '1') {
-                        week_change_name += "월요일, ";
+                        week_change_name += "월요일,";
                     } else if (week_toCharArray[j] == '2') {
-                        week_change_name += "화요일, ";
+                        week_change_name += "화요일,";
                     } else if (week_toCharArray[j] == '3') {
-                        week_change_name += "수요일, ";
+                        week_change_name += "수요일,";
                     } else if (week_toCharArray[j] == '4') {
-                        week_change_name += "목요일, ";
+                        week_change_name += "목요일,";
                     } else if (week_toCharArray[j] == '5') {
-                        week_change_name += "금요일, ";
+                        week_change_name += "금요일,";
                     }
                 } else {
                     if (week_toCharArray[j] == '1') {
@@ -182,7 +208,7 @@ public class AttendanceActivity extends AppCompatActivity {
             return position;
         }
 
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, final ViewGroup parent) {
 
             /**
              * ListView를 보여주는 getView()메소드이다.
@@ -230,7 +256,6 @@ public class AttendanceActivity extends AppCompatActivity {
                      * 서버에서는 과목번호에 맞는 출결현황(출석,지각,결석) 데이터를 전송한다.
                      */
                     serverThread = new ServerThread(serverThread.REQUEST_ATTENDANCE_NUMBER(),student_number,lecture_number_split_by_comma[position]);
-
                     serverThread.start();
                     try {
                         Thread.sleep(1000);
@@ -240,18 +265,48 @@ public class AttendanceActivity extends AppCompatActivity {
 
                     attendance_number = serverThread.request_attendance_number();
 
-//                    attendance_number = "110010201";
+                    ////////////////////
+
+                    beacon_minor_pre = getSharedPreferences("beaconminor", 0);
+                    beacon_minor_editor = beacon_minor_pre.edit();
+                    beacon_minor_editor.putString("beaconminor", lecture_minor_split_by_comma[position]);
+                    beacon_minor_editor.commit();
+
+
+                    /**
+                     *  블루투스매니저와 어댑터를 설정합니다.
+                     */
+                    mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+                    mBluetoothAdapter = mBluetoothManager.getAdapter();
+
+                    /**
+                     *  블루투스를 자동적으로 On합니다.
+                     */
+                    if(mBluetoothAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON ||
+                            mBluetoothAdapter.getState() == mBluetoothAdapter.STATE_ON){
+                    } else {
+                        mBluetoothAdapter.enable();
+                    }
+                    /**
+                     * 레코 모니터링 백그라운드 서비스를 실행하여 교실 내부인지 외부인지를 확인시켜준다.
+                     */
+                    intent_RecoBackgroundMonitoringService = new Intent(getApplicationContext(),RecoBackgroundMonitoringService.class);
+                    startService(intent_RecoBackgroundMonitoringService);
+
+
 
 
                     intent_CheckAttendance = new Intent(context, CheckAttendance.class);
-                    intent_CheckAttendance.putExtra("Lecture_name", lecture.lecture_name);
-                    intent_CheckAttendance.putExtra("Lecture_week", lecture.lecture_week);
-                    intent_CheckAttendance.putExtra("Lecture_date", lecture.lecture_date);
+                    intent_CheckAttendance.putExtra("Lecture_name", lectureArrayList.get(position).lecture_name);
+                    intent_CheckAttendance.putExtra("Lecture_week", lectureArrayList.get(position).lecture_week);
+                    intent_CheckAttendance.putExtra("Lecture_date", lectureArrayList.get(position).lecture_date);
                     intent_CheckAttendance.putExtra("attendance_number",attendance_number);
-                    intent_CheckAttendance.putExtra("student_number",student_number);
-                    intent_CheckAttendance.putExtra("lecture_number",lecture_number_split_by_comma[position]);
-                    intent_CheckAttendance.putExtra("lecture_start_time",lecture_start_time_split_by_comma[position]);
+                    intent_CheckAttendance.putExtra("student_number", student_number);
+                    intent_CheckAttendance.putExtra("lecture_number", lecture_number_split_by_comma[position]);
+                    intent_CheckAttendance.putExtra("lecture_start_time", lecture_start_time_split_by_comma[position]);
+                    intent_CheckAttendance.putExtra("beacon_minor", lecture_minor_split_by_comma[position]);
                     startActivity(intent_CheckAttendance);
+
                 }
             });
             return convertView;

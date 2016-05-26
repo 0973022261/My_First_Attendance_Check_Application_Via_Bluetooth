@@ -1,31 +1,16 @@
 package com.example.inhm.project_heatcon;
 
-import android.Manifest;
-import android.app.Activity;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Looper;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 /**
  *
@@ -45,10 +30,6 @@ public class LogInActivity extends AppCompatActivity {
     private static final int REQUEST_LOGIN_NUMBER = 1;          //서버 로그인 요청 코드
     ServerThread serverThread;
 
-    ///////////////BluetoothManager///////////////////
-    private BluetoothManager mBluetoothManager;                                         //블루투스 매니저 객체 변수
-    private BluetoothAdapter mBluetoothAdapter;                                         //블루투스 어댑터 객체 변수
-
     ///////////////SharedPreferences//////////////////
     SharedPreferences sharedPreferences_student_number;
     SharedPreferences.Editor editor;
@@ -57,7 +38,6 @@ public class LogInActivity extends AppCompatActivity {
     String string_student_number;
 
     //////////////Intent//////////////////////////////
-    Intent intent_RecoBackgroundMonitoringService;
     Intent intent_MenuActivity;
 
     /////////////Boolean//////////////////////////////
@@ -76,21 +56,6 @@ public class LogInActivity extends AppCompatActivity {
         editText_student_password = (EditText) findViewById(R.id.editText_student_password);//비번
 
         /**
-         *  블루투스매니저와 어댑터를 설정합니다.
-         */
-        mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = mBluetoothManager.getAdapter();
-
-        /**
-         *  블루투스를 자동적으로 On합니다.
-         */
-        if(mBluetoothAdapter.getState() == BluetoothAdapter.STATE_TURNING_ON ||
-                mBluetoothAdapter.getState() == mBluetoothAdapter.STATE_ON){
-        } else {
-                mBluetoothAdapter.enable();
-        }
-
-        /**
          * 로그인 했던 아이디 불러오기
          *
          * sharedPreferences를 이용해서 학번과 비밀번호를 저장한다.
@@ -102,18 +67,11 @@ public class LogInActivity extends AppCompatActivity {
         string_student_number = sharedPreferences_student_number.getString("student_number", "");
         editText_student_number.setText(string_student_number);
 
-        /**
-         * 레코 모니터링 백그라운드 서비스를 실행하여 교실 내부인지 외부인지를 확인시켜준다.
-         */
-        intent_RecoBackgroundMonitoringService = new Intent(this,RecoBackgroundMonitoringService.class);
-        startService(intent_RecoBackgroundMonitoringService);
+        Log.d("LoginActivity", editText_student_number.toString());
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
+    protected void onResume() {super.onResume();}
 
     public void onButton1Clicked(View v) {
 
@@ -123,16 +81,16 @@ public class LogInActivity extends AppCompatActivity {
          *  서버 요청을 한뒤 데이터를 받기까지 시간이 걸리므로 약 1초의 시간동안 스레드를 sleep합니다.
          *  스레드가 깨어나면 서버 스레드의 request_attendance메소드를 불러와 Boolean으로 Ture, false를 불러옵니다.
          */
-        serverThread = new ServerThread(REQUEST_LOGIN_NUMBER,editText_student_number.getText().toString(),editText_student_password.getText().toString(),true);
+        serverThread = new ServerThread(REQUEST_LOGIN_NUMBER, editText_student_number.getText().toString(), editText_student_password.getText().toString(), true);
         serverThread.start();
+        Log.d("LoginActivity", "서버접속중");
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         login_Check = serverThread.request_attendance();
-
-//        login_Check = true;
+        Log.d("LoginActivity", "서버로 부터 받은 request 값 = " + login_Check);
 
         /**
          * 서버에서 받아온 로그인 체크를 통해 True 이면 Menu액티비티를 실행합니다.

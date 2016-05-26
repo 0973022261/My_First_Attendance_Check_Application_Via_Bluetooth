@@ -3,14 +3,15 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:weightSum="1"
-    android:background="#2b2b2b">
+    android:background="#ffffff">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="#374e8b53">
 
         <TextView
             android:layout_width="wrap_content"
@@ -18,7 +19,7 @@
             android:text="New Text"
             android:id="@+id/lecture_name"
             android:textSize="30dp"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:ellipsize="end"
             android:singleLine="true"/>
 
@@ -32,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="New Text"
                 android:id="@+id/lecture_week"
-                android:textColor="#ffffff"
+                android:textColor="#3a3a3a"
                 android:textSize="20dp" />
 
             <TextView
@@ -41,7 +42,7 @@
                 android:text="New Text"
                 android:id="@+id/lecture_date"
                 android:textSize="20dp"
-                android:textColor="#ffffff"
+                android:textColor="#3a3a3a"
                 android:ellipsize="end"
                 android:singleLine="true" />
 

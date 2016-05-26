@@ -2,46 +2,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:background="#ffffff">
 
-    <Button
-        android:layout_width="250dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="수강 과목 목록"
-        android:id="@+id/button2"
-        android:layout_gravity="center_horizontal"
-        android:textSize="30dp"
-        android:layout_marginBottom="20dp"
-        android:onClick="onButtonAttendClicked" />
+        android:layout_gravity="center_horizontal">
 
-    <Button
-        android:layout_width="250dp"
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:id="@+id/imageView2"
+            android:src="@drawable/logologo" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="시간표 조회"
-        android:id="@+id/button5"
-        android:layout_gravity="center_horizontal"
-        android:textSize="30dp"
-        android:layout_marginBottom="20dp"
-        android:onClick="onButtonTimeTableClicked" />
+        android:layout_marginTop="50dp">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="수강 과목 목록"
+            android:id="@+id/button2"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="onButtonAttendClicked"
+            android:background="#4e8b53" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="시간표 조회"
+            android:id="@+id/button5"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="onButtonTimeTableClicked"
+            android:background="#4e8b53"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="학생식당 메뉴"
+            android:id="@+id/button6"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="onButtonFoodListClicked"
+            android:background="#4e8b53"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="환경설정"
+            android:id="@+id/button8"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30dp"
+            android:onClick="onButtonUseInfoClicked"
+            android:background="#4e8b53"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
 
 
-    <Button
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="학생식당 메뉴"
-        android:id="@+id/button6"
-        android:layout_gravity="center_horizontal"
-        android:textSize="30dp"
-        android:layout_marginBottom="20dp"
-        android:onClick="onButtonFoodListClicked" />
-
-
-    <Button
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="환경설정"
-        android:id="@+id/button8"
-        android:layout_gravity="center_horizontal"
-        android:textSize="30dp"
-        android:onClick="onButtonUseInfoClicked" />
 </LinearLayout>
